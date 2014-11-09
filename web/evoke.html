@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Evoke</title>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script type="text/javascript" src="../../Empirical/kinetic/kinetic-v5.1.0.min.js"></script>
+    <script type="text/javascript" src="../evoke.js"></script>
+    <script>
+      empJSDoCallback = Module.cwrap('empJSDoCallback', null, ['number', 'number']);
+      evokeMain = Module.cwrap('evokeMain', 'number');
+      var result = evokeMain();
+    </script>
+  </body>
+</html>

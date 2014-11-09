@@ -6,12 +6,12 @@
 class EvokeInterface {
 private:
   evoke::Viewport viewport;
-  emk::Layer layer_anim;
-  emk::Stage stage;
+  emp::Layer layer_anim;
+  emp::Stage stage;
 
 public:
   EvokeInterface()
-    : viewport()
+    : viewport(0, 0, 300, 300)
     , stage(1200, 600, "container")
   {
     const int min_stage_size = 300;
