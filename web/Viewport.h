@@ -15,7 +15,7 @@ namespace evoke {
     void Draw(emp::Canvas & canvas) {
       // Setup the black background
       canvas.SetFill("black");
-      canvas.Rect(0, 0, GetWidth(), GetHeight());
+      canvas.Rect(0, 0, GetWidth(), GetHeight(), true);
     }
   };
 
