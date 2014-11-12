@@ -4,6 +4,8 @@
 #include "kinetic/Kinetic.h"
 
 namespace evoke {
+
+  // Viewport displays a physics environment on the screen and allows some manipulation.
   class Viewport : public emp::CustomShape {
   private:
   public:

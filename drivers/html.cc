@@ -5,20 +5,32 @@
 #include "kinetic/Kinetic.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
+#include "../organisms/OrgControl.h"
 #include "../web/Viewport.h"
+
+typedef int dEvokeBase;
+typedef evoke::OrgControl dEvokeControl;
+typedef emp::CircleBody2D< dEvokeControl, dEvokeBase > dEvokeBody;
 
 class EvokeInterface {
 private:
-  evoke::Viewport viewport;
-  emp::Layer layer_anim;
   emp::Stage stage;
+  emp::Layer layer_anim;
   emp::cConfig config;
 
+  emp::Physics2D<dEvokeBody, dEvokeControl, dEvokeBase> physics;
+  evoke::Viewport viewport;
 public:
   EvokeInterface()
-    : viewport(0, 0, 300, 300)
-    , stage(1200, 600, "container")
+    : stage(1200, 600, "container")
+    , physics(1000, 1000)
+    , viewport(0, 0, 300, 300) //, physics)
   {
+    
+    auto new_org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 10), NULL);
+    physics.AddActiveBody(new_org);
+
+
     const int min_stage_size = 300;
     stage.ResizeMax(min_stage_size, min_stage_size);
 
@@ -29,23 +41,10 @@ public:
   ~EvokeInterface() { ; }
 };
 
-// @CAO Move elsewhere!
-class OrgControl {
-private:
-public:
-  OrgControl() { ; }
-  ~OrgControl() { ; }
-};
-
 EvokeInterface * evoke_interface;
 
 extern "C" int evokeMain()
 {
-  emp::Physics2D< emp::CircleBody2D< OrgControl, int >, OrgControl, int > physics(1000, 1000);
-
-  auto new_org = new emp::CircleBody2D<OrgControl, int>(emp::Circle<int>(emp::Point<int>(123,456), 10), NULL);
-  physics.AddActiveBody(new_org);
-
   evoke_interface = new EvokeInterface();
 
   return 0;
