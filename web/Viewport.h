@@ -2,15 +2,21 @@
 #define EVOKE_VIEWPORT_H
 
 #include "kinetic/Kinetic.h"
+#include "geometry/Physics2D.h"
 
 namespace evoke {
 
   // Viewport displays a physics environment on the screen and allows some manipulation.
+  template <typename BODY_TYPE, typename BODY_INFO, typename BASE_TYPE> 
   class Viewport : public emp::CustomShape {
   private:
+    typedef emp::Physics2D<BODY_TYPE, BODY_INFO, BASE_TYPE> dViewportPhysics;
+    dViewportPhysics & physics;
+
   public:
-    Viewport(int _x, int _y, int _width, int _height)
+    Viewport(int _x, int _y, int _width, int _height, dViewportPhysics & _physics)
       : CustomShape(_x, _y, _width, _height, this, &Viewport::Draw)
+      , physics(_physics)
     { ; }
     ~Viewport() { ; }
 
@@ -18,6 +24,9 @@ namespace evoke {
       // Setup the black background
       canvas.SetFill("black");
       canvas.Rect(0, 0, GetWidth(), GetHeight(), true);
+
+      // Draw all shapes in the physics.
+      
     }
   };
 

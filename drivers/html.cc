@@ -19,12 +19,12 @@ private:
   emp::cConfig config;
 
   emp::Physics2D<dEvokeBody, dEvokeControl, dEvokeBase> physics;
-  evoke::Viewport viewport;
+  evoke::Viewport<dEvokeBody, dEvokeControl, dEvokeBase> viewport;
 public:
   EvokeInterface()
     : stage(1200, 600, "container")
     , physics(1000, 1000)
-    , viewport(0, 0, 300, 300) //, physics)
+    , viewport(0, 0, 300, 300, physics)
   {
     
     auto new_org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 10), NULL);
