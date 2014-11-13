@@ -6,6 +6,10 @@
 
 namespace evoke {
 
+  // @CAO For now we are assuming that:
+  //   BODY_TYPE is emp::CircleBody2D
+  //   BODY_INFO is evoke::OrgControl
+
   // Viewport displays a physics environment on the screen and allows some manipulation.
   template <typename BODY_TYPE, typename BODY_INFO, typename BASE_TYPE> 
   class Viewport : public emp::CustomShape {
@@ -26,7 +30,13 @@ namespace evoke {
       canvas.Rect(0, 0, GetWidth(), GetHeight(), true);
 
       // Draw all shapes in the physics.
-      
+      const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetActiveBodySet();
+      canvas.BeginPath();
+      for (const auto body : active_body_set) {
+        canvas.SetStroke("white");
+        canvas.Circle(body->GetPerimeter());
+      }
+      canvas.Stroke();
     }
   };
 
