@@ -31,12 +31,12 @@ namespace evoke {
 
       // Draw all shapes in the physics.
       const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetActiveBodySet();
-      canvas.BeginPath();
+      canvas.SetStroke("white");
       for (const auto body : active_body_set) {
-        canvas.SetStroke("white");
+        canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
+        canvas.Stroke();
       }
-      canvas.Stroke();
     }
   };
 
