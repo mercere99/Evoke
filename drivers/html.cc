@@ -27,7 +27,7 @@ public:
     , viewport(0, 0, 600, 600, physics)
   {
     
-    auto new_org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 10), NULL);
+    auto new_org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 100), NULL);
     physics.AddActiveBody(new_org);
 
 
