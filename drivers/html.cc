@@ -20,6 +20,8 @@ private:
 
   emp::Physics2D<dEvokeBody, dEvokeControl, dEvokeBase> physics;
   evoke::Viewport<dEvokeBody, dEvokeControl, dEvokeBase> viewport;
+
+  emp::Animation<EvokeInterface> anim_interface;
 public:
   EvokeInterface()
     : stage(1200, 600, "container")
@@ -27,18 +29,30 @@ public:
     , viewport(0, 0, 600, 600, physics)
   {
     
-    auto new_org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 100), NULL);
-    physics.AddActiveBody(new_org);
-
+    auto org1 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 100), NULL);
+    physics.AddBody(org1);
+    auto org2 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(423,456), 100), NULL);
+    physics.AddBody(org2);
+    auto org3 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(300,300), 50), NULL);
+    org1->SetVelocity(7,3);
+    physics.AddBody(org3);
 
     const int min_stage_size = 300;
     stage.ResizeMax(min_stage_size, min_stage_size);
 
     layer_anim.Add(viewport);
     stage.Add(layer_anim);
+
+    anim_interface.Setup(this, &EvokeInterface::Animate, layer_anim);
+    anim_interface.Start();
   }
 
   ~EvokeInterface() { ; }
+
+  void Animate(const emp::AnimationFrame & frame) {
+    physics.Update();
+    std::cout << frame.time << std::endl;
+  }
 };
 
 EvokeInterface * evoke_interface;

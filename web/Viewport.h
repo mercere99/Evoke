@@ -30,7 +30,7 @@ namespace evoke {
       canvas.Rect(0, 0, GetWidth(), GetHeight(), true);
 
       // Draw all shapes in the physics.
-      const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetActiveBodySet();
+      const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
       canvas.SetStroke("white");
       for (const auto body : active_body_set) {
         canvas.BeginPath();
