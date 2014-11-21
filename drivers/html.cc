@@ -8,7 +8,7 @@
 #include "../organisms/OrgControl.h"
 #include "../web/Viewport.h"
 
-typedef int dEvokeBase;
+typedef double dEvokeBase;
 typedef evoke::OrgControl dEvokeControl;
 typedef emp::CircleBody2D< dEvokeControl, dEvokeBase > dEvokeBody;
 
@@ -37,7 +37,7 @@ public:
     org1->SetVelocity(7,3);
     physics.AddBody(org3);
 
-    const int min_stage_size = 300;
+    const int min_stage_size = 500;
     stage.ResizeMax(min_stage_size, min_stage_size);
 
     layer_anim.Add(viewport);
