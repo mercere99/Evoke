@@ -5,9 +5,9 @@
   </head>
   <body>
 
-  <h1>Welcome to E.voke!</h1>
-
-  <div id="container"></div>
+    <h1>Welcome to E.voke!</h1>
+    
+    <div id="container"></div>
     <script type="text/javascript" src="../../Empirical/kinetic/kinetic-v5.1.0.min.js"></script>
     <script type="text/javascript" src="../evoke.js"></script>
     <script>
@@ -15,5 +15,7 @@
       evokeMain = Module.cwrap('evokeMain', 'number');
       var result = evokeMain();
     </script>
+
+    <button title="Continuously execute instructions" style="width:80px" id="play_button"    disabled=true onclick="emkJSDoCallback(emp_info.play, 0)">Play</button>
   </body>
 </html>

@@ -27,8 +27,10 @@ public:
     : stage(1200, 600, "container")
     , physics(600, 600)
     , viewport(0, 0, 600, 600, physics)
-  {
-    
+  {    
+    emp::MethodCallback<EvokeInterface> * play_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoPlay);
+    EM_ASM_ARGS({ emp_info.callbacks = $0; }, (int) play_cb);
+
     auto org1 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 100), NULL);
     physics.AddBody(org1);
     auto org2 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(423,456), 100), NULL);
@@ -52,6 +54,11 @@ public:
   void Animate(const emp::AnimationFrame & frame) {
     physics.Update();
     std::cout << frame.time << std::endl;
+  }
+
+  void DoPlay() {
+    if (anim_interface.IsRunning()) anim_interface.Stop();
+    else anim_interface.Start();
   }
 };
 
