@@ -16,12 +16,18 @@ namespace evoke {
   private:
     typedef emp::Physics2D<BODY_TYPE, BODY_INFO, BASE_TYPE> dViewportPhysics;
     dViewportPhysics & physics;
+    std::vector<emp::Color> color_map;
 
   public:
     Viewport(int _x, int _y, int _width, int _height, dViewportPhysics & _physics)
       : CustomShape(_x, _y, _width, _height, this, &Viewport::Draw)
       , physics(_physics)
-    { ; }
+    {
+      On("click", this, &Viewport<BODY_TYPE, BODY_INFO, BASE_TYPE>::OnClick);
+      color_map.push_back("white");
+      color_map.push_back("yellow");
+      color_map.push_back("#CCFFCC");
+    }
     ~Viewport() { ; }
 
     void Draw(emp::Canvas & canvas) {
@@ -31,13 +37,37 @@ namespace evoke {
 
       // Draw all shapes in the physics.
       const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
-      canvas.SetStroke("white");
       for (const auto body : active_body_set) {
+        if (body->GetColorID() < 0 || body->GetColorID() > 2) emp::Alert((int) active_body_set.size());
+        canvas.SetStroke(color_map[body->GetColorID()]);
         canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
         canvas.Stroke();
       }
+
+      // Make the canvas respond to the mouse.
+      canvas.BeginPath();
+      canvas.MoveTo(0, 0);
+      canvas.LineTo(GetWidth(), 0);
+      canvas.LineTo(GetWidth(), GetHeight());
+      canvas.LineTo(0, GetHeight());
+      canvas.ClosePath();
+      canvas.SetupTarget(*this);
     }
+
+    void OnClick(const emp::EventInfo & evt) {
+      const emp::Point<BASE_TYPE> mouse_pos(evt.layer_x - GetX(), evt.layer_y - GetY());
+
+      // Figure out which circle was clicked in.
+      const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
+      for (const auto body : active_body_set) {
+        if (body->GetPerimeter().Contains(mouse_pos)) {
+          body->SetColorID(1);
+          DrawLayer();
+        }
+      }
+    }
+    
   };
 
 };
