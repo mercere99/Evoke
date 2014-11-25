@@ -3,11 +3,12 @@ CFLAGS_all := -Wall -std=c++11
 
 # Native compiler information
 CXX_nat := g++-4.8
-CFLAGS_nat := -g $(CFLAGS_all)
+CFLAGS_nat := -g $(CFLAGS_all) -I/Users/charles/dev/GitHub/Empirical/
 
 # Emscripten compiler information
 CXX_web := emcc
-OFLAGS_web := -g4 -Werror -DEMP_DEBUG -I/Users/charles/dev/GitHub/Empirical/
+#OFLAGS_web := -g4 -Werror -DEMP_DEBUG -I/Users/charles/dev/GitHub/Empirical/ -s TOTAL_MEMORY=67108864
+OFLAGS_web := -Oz -Werror -DNODEBUG -I/Users/charles/dev/GitHub/Empirical/ -s TOTAL_MEMORY=67108864
 CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/kinetic/library_kinetic.js  -s EXPORTED_FUNCTIONS="['_evokeMain', '_empJSDoCallback', '_empLoadString']"
 
 default: evoke
@@ -32,4 +33,4 @@ grid_test: $(GT_SRC)
 	$(CXX_web) $(CFLAGS_web) -o tests/grid_test.js $(GT_SRC)
 
 clean:
-	rm -f evoke evoke.js *~ *.o */*.o
+	rm -f evoke evoke.js *.js.map *~ *.o */*.o
