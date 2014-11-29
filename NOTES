@@ -1,0 +1,12 @@
+-=-= Next Steps =-=-
+* Get keyboard input working.
+* Allow user to control clicked-on organism.
+  - Left and Right to Turn
+  - Up for thrust, Down for breaks
+  - 'R' for replicate
+  - Spacebar for fire
+  - '+' and '-' for grown and shrink.  Adjust default speed?
+
+-=-= Efficiency notes =-=-
+* Integers may be sufficiently faster than doubles that we should consider switching the
+  physics to fixed-point ints.
