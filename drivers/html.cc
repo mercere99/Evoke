@@ -14,6 +14,8 @@ typedef emp::CircleBody2D< dEvokeControl, dEvokeBase > dEvokeBody;
 
 class EvokeInterface {
 private:
+  const dEvokeBase world_x = 512;
+  const dEvokeBase world_y = 512;
   emp::Stage stage;
   emp::Layer layer_anim;
   emp::cConfig config;
@@ -24,23 +26,36 @@ private:
   emp::Animation<EvokeInterface> anim_interface;
 public:
   EvokeInterface()
-    : stage(1200, 600, "container")
-    , physics(600, 600)
-    , viewport(0, 0, 600, 600, physics)
+    : stage(world_x, world_y, "container")
+    , physics(world_x, world_y)
+    , viewport(0, 0, world_x, world_y, physics)
   {    
     emp::MethodCallback<EvokeInterface> * play_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoPlay);
-    EM_ASM_ARGS({ emp_info.callbacks.play_cb = $0; }, (int) play_cb);
+    emp::MethodCallback<EvokeInterface> * step_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoStep);
+    EM_ASM_ARGS({
+        emp_info.callbacks.play_cb = $0;
+        emp_info.callbacks.step_cb = $1;
+      }, (int) play_cb, (int) step_cb);
 
-    auto org1 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 100), NULL);
+    auto org1 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 8), NULL);
     physics.AddBody(org1);
-    auto org2 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(423,456), 100), NULL);
+    auto org2 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(423,456), 8), NULL);
     physics.AddBody(org2);
-    auto org3 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(300,300), 50), NULL);
-    org1->SetVelocity(7,3);
+    auto org3 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(300,300), 8), NULL);
     physics.AddBody(org3);
+    org1->SetVelocity(7,3);
+    // org1->SetTargetRadius(200);
 
-    const int min_stage_size = 500;
-    stage.ResizeMax(min_stage_size, min_stage_size);
+    const int base_radius = 8;
+    for (int i = base_radius+1; i < world_x-base_radius-1; i += 2*base_radius) {
+      for (int j = 200; j < 250; j += 2*base_radius + 1) {
+        auto org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(i,j), base_radius), NULL);
+        org->SetVelocity(0,1);
+        physics.AddBody(org);
+      }
+    }
+
+    // stage.ResizeMax(world_x, world_y);
 
     layer_anim.Add(viewport);
     stage.Add(layer_anim);
@@ -53,13 +68,30 @@ public:
 
   void Animate(const emp::AnimationFrame & frame) {
     physics.Update();
-    // std::cout << frame.time << std::endl;
   }
 
   void DoPlay() {
-    std::cout << "Ping!!!" << std::endl;
-    if (anim_interface.IsRunning()) anim_interface.Stop();
-    else anim_interface.Start();
+    if (anim_interface.IsRunning()) {
+      anim_interface.Stop();
+      EM_ASM({
+          document.getElementById("play_button").innerHTML = "Play";
+          document.getElementById("step_button").disabled = false;
+        });
+    }
+    else {
+      anim_interface.Start();
+      EM_ASM({
+          document.getElementById("play_button").innerHTML = "Pause";
+          document.getElementById("step_button").disabled = true;
+        });
+    }
+  }
+  void DoStep() {
+    // Step is only meaningful if the run is paused.
+    if (anim_interface.IsRunning() == false) {
+      physics.Update();
+      layer_anim.Draw();
+    }
   }
 };
 

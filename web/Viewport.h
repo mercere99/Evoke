@@ -36,7 +36,9 @@ namespace evoke {
       canvas.Rect(0, 0, GetWidth(), GetHeight(), true);
 
       // Draw all shapes in the physics.
-      const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
+      canvas.SetStroke("white");
+      // const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
+      const std::vector<BODY_TYPE *> & active_body_set = physics.GetBodySet();
       for (const auto body : active_body_set) {
         if (body->GetColorID() < 0 || body->GetColorID() > 2) emp::Alert((int) active_body_set.size());
         canvas.SetStroke(color_map[body->GetColorID()]);
@@ -59,7 +61,8 @@ namespace evoke {
       const emp::Point<BASE_TYPE> mouse_pos(evt.layer_x - GetX(), evt.layer_y - GetY());
 
       // Figure out which circle was clicked in.
-      const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
+      // const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
+      const std::vector<BODY_TYPE *> & active_body_set = physics.GetBodySet();
       for (const auto body : active_body_set) {
         if (body->GetPerimeter().Contains(mouse_pos)) {
           body->SetColorID(1);
