@@ -18,10 +18,13 @@ namespace evoke {
     dViewportPhysics & physics;
     std::vector<emp::Color> color_map;
 
+    BODY_TYPE * player_body;  // Which body, if any, is the player controlling?
+
   public:
     Viewport(int _x, int _y, int _width, int _height, dViewportPhysics & _physics)
       : CustomShape(_x, _y, _width, _height, this, &Viewport::Draw)
       , physics(_physics)
+      , player_body(NULL)
     {
       On("click", this, &Viewport<BODY_TYPE, BODY_INFO, BASE_TYPE>::OnClick);
       color_map.push_back("white");
@@ -37,6 +40,7 @@ namespace evoke {
 
       // Draw all shapes in the physics.
       canvas.SetStroke("white");
+      canvas.SetFill("yellow");
       // const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
       const std::vector<BODY_TYPE *> & active_body_set = physics.GetBodySet();
       for (const auto body : active_body_set) {
@@ -44,6 +48,9 @@ namespace evoke {
         canvas.SetStroke(color_map[body->GetColorID()]);
         canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
+        if (body == player_body) {
+          canvas.Fill();
+        }
         canvas.Stroke();
       }
 
@@ -67,6 +74,7 @@ namespace evoke {
         if (body->GetPerimeter().Contains(mouse_pos)) {
           body->SetColorID(1);
           DrawLayer();
+          player_body = body;
         }
       }
     }
