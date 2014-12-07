@@ -2,6 +2,7 @@
 #define EVOKE_VIEWPORT_H
 
 #include "kinetic/Kinetic.h"
+#include "emtools/keypress.h"
 #include "geometry/Physics2D.h"
 
 namespace evoke {
@@ -14,11 +15,18 @@ namespace evoke {
   template <typename BODY_TYPE, typename BODY_INFO, typename BASE_TYPE> 
   class Viewport : public emp::CustomShape {
   private:
+    emp::KeypressManager keypress_manager;
+
     typedef emp::Physics2D<BODY_TYPE, BODY_INFO, BASE_TYPE> dViewportPhysics;
     dViewportPhysics & physics;
     std::vector<emp::Color> color_map;
 
     BODY_TYPE * player_body;  // Which body, if any, is the player controlling?
+
+    bool KeydownCallback(const emp::EventInfo & evt_info) {
+      emp::Alert(evt_info.key_code);
+      return true;
+    }
 
   public:
     Viewport(int _x, int _y, int _width, int _height, dViewportPhysics & _physics)
@@ -27,6 +35,11 @@ namespace evoke {
       , player_body(NULL)
     {
       On("click", this, &Viewport<BODY_TYPE, BODY_INFO, BASE_TYPE>::OnClick);
+      // keypress_manager.AddKeydownCallback(*this, &Viewport::KeydownCallback);
+      auto bound_cb = std::bind( std::mem_fn(&Viewport::KeydownCallback), std::ref(*this), _1);
+      keypress_manager.AddKeydownCallback(bound_cb);
+
+
       color_map.push_back("white");
       color_map.push_back("yellow");
       color_map.push_back("#CCFFCC");
