@@ -2,7 +2,6 @@
 #define EVOKE_VIEWPORT_H
 
 #include "kinetic/Kinetic.h"
-#include "emtools/keypress.h"
 #include "geometry/Physics2D.h"
 #include "tools/functions.h"
 
@@ -16,33 +15,11 @@ namespace evoke {
   template <typename BODY_TYPE, typename BODY_INFO, typename BASE_TYPE> 
   class Viewport : public emp::CustomShape {
   private:
-    emp::KeypressManager keypress_manager;
-
     typedef emp::Physics2D<BODY_TYPE, BODY_INFO, BASE_TYPE> dViewportPhysics;
     dViewportPhysics & physics;
     std::vector<emp::Color> color_map;
 
     BODY_TYPE * player_body;  // Which body, if any, is the player controlling?
-
-    bool KeydownCallback(const emp::EventInfo & evt_info) {
-      switch (evt_info.key_code) {
-      case 37:                                      // LEFT ARROW (Turn Left)
-        if (player_body) player_body->TurnLeft();
-        break;
-      case 38:                                      // UP ARROW (Accellerate)
-        if (player_body) player_body->IncSpeed();
-        break;
-      case 39:                                      // RIGHT ARROW (Turn Right)
-        if (player_body) player_body->TurnRight();
-        break;
-      case 40:                                      // DOWN ARROW (Breaks)
-        if (player_body) player_body->DecSpeed();
-        break;
-      default:
-        emp::Alert(evt_info.key_code);
-      };
-      return true;
-    }
 
   public:
     Viewport(int _x, int _y, int _width, int _height, dViewportPhysics & _physics)
@@ -51,9 +28,6 @@ namespace evoke {
       , player_body(NULL)
     {
       On("click", this, &Viewport::OnClick);
-      auto bound_cb = std::bind( &Viewport::KeydownCallback, this, _1);
-      keypress_manager.AddKeydownCallback(bound_cb);
-
 
       color_map.push_back("white");
       color_map.push_back("yellow");
@@ -97,6 +71,30 @@ namespace evoke {
       canvas.LineTo(0, GetHeight());
       canvas.ClosePath();
       canvas.SetupTarget(*this);
+    }
+
+    bool OnKeydown(const emp::EventInfo & evt_info) {
+      const int key_code = evt_info.key_code;
+      bool return_value = true;
+
+      switch (key_code) {
+      case 37:                                      // LEFT ARROW (Turn Left)
+        if (player_body) player_body->TurnLeft();
+        break;
+      case 38:                                      // UP ARROW (Accellerate)
+        if (player_body) player_body->IncSpeed();
+        break;
+      case 39:                                      // RIGHT ARROW (Turn Right)
+        if (player_body) player_body->TurnRight();
+        break;
+      case 40:                                      // DOWN ARROW (Breaks)
+        if (player_body) player_body->DecSpeed();
+        break;
+      default:
+        return_value = false;
+      };
+
+      return return_value;
     }
 
     void OnClick(const emp::EventInfo & evt) {
