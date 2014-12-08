@@ -4,6 +4,7 @@
 #include "kinetic/Kinetic.h"
 #include "emtools/keypress.h"
 #include "geometry/Physics2D.h"
+#include "tools/functions.h"
 
 namespace evoke {
 
@@ -35,8 +36,8 @@ namespace evoke {
       , player_body(NULL)
     {
       On("click", this, &Viewport<BODY_TYPE, BODY_INFO, BASE_TYPE>::OnClick);
-      // keypress_manager.AddKeydownCallback(*this, &Viewport::KeydownCallback);
-      auto bound_cb = std::bind( std::mem_fn(&Viewport::KeydownCallback), std::ref(*this), _1);
+      // auto bound_cb = std::bind( std::mem_fn(&Viewport::KeydownCallback), std::ref(*this), _1);
+      auto bound_cb = std::bind( &Viewport::KeydownCallback, this, _1);
       keypress_manager.AddKeydownCallback(bound_cb);
 
 
