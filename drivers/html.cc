@@ -43,14 +43,15 @@ public:
     physics.AddBody(org2);
     auto org3 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(300,300), 8), NULL);
     physics.AddBody(org3);
-    org1->SetVelocity(7,3);
+    // org1->SetVelocity(7,3);
     // org1->SetTargetRadius(200);
 
     const int base_radius = 8;
     for (int i = base_radius+1; i < world_x-base_radius-1; i += 2*base_radius) {
-      for (int j = 200; j < 250; j += 2*base_radius + 1) {
+      // for (int j = 200; j < 250; j += 2*base_radius + 1) {
+      for (int j = 25; j < 250; j += 2*base_radius + 1) {
         auto org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(i,j), base_radius), NULL);
-        org->SetVelocity(0,1);
+        // org->SetVelocity(0,1);
         physics.AddBody(org);
       }
     }

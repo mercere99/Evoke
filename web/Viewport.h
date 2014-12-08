@@ -25,7 +25,22 @@ namespace evoke {
     BODY_TYPE * player_body;  // Which body, if any, is the player controlling?
 
     bool KeydownCallback(const emp::EventInfo & evt_info) {
-      emp::Alert(evt_info.key_code);
+      switch (evt_info.key_code) {
+      case 37:                                      // LEFT ARROW (Turn Left)
+        if (player_body) player_body->TurnLeft();
+        break;
+      case 38:                                      // UP ARROW (Accellerate)
+        if (player_body) player_body->IncSpeed();
+        break;
+      case 39:                                      // RIGHT ARROW (Turn Right)
+        if (player_body) player_body->TurnRight();
+        break;
+      case 40:                                      // DOWN ARROW (Breaks)
+        if (player_body) player_body->DecSpeed();
+        break;
+      default:
+        emp::Alert(evt_info.key_code);
+      };
       return true;
     }
 
@@ -35,8 +50,7 @@ namespace evoke {
       , physics(_physics)
       , player_body(NULL)
     {
-      On("click", this, &Viewport<BODY_TYPE, BODY_INFO, BASE_TYPE>::OnClick);
-      // auto bound_cb = std::bind( std::mem_fn(&Viewport::KeydownCallback), std::ref(*this), _1);
+      On("click", this, &Viewport::OnClick);
       auto bound_cb = std::bind( &Viewport::KeydownCallback, this, _1);
       keypress_manager.AddKeydownCallback(bound_cb);
 
@@ -62,10 +76,17 @@ namespace evoke {
         canvas.SetStroke(color_map[body->GetColorID()]);
         canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
+        canvas.Stroke();
         if (body == player_body) {
           canvas.Fill();
+          canvas.SetStroke("black");
+          canvas.BeginPath();
+          canvas.MoveTo(body->GetAnchor());
+          canvas.LineTo(body->GetAnchor() + emp::Point<double>(body->GetOrientation().Sin(), body->GetOrientation().Cos()) * body->GetRadius());
+          canvas.ClosePath();
+          canvas.Stroke();
+          canvas.SetStroke("white");
         }
-        canvas.Stroke();
       }
 
       // Make the canvas respond to the mouse.
