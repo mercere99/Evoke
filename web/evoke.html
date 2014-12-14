@@ -16,7 +16,8 @@
       var result = evokeMain();
     </script>
 
-    <button title="Run Environment" style="width:80px" id="play_button" onclick="empJSDoCallback(emp_info.callbacks.play_cb, 0)">[P]ause</button>
-    <button title="Step Environment" style="width:80px" id="step_button" disabled=true onclick="empJSDoCallback(emp_info.callbacks.step_cb, 0)">[S]tep</button>
+    <button title="Run continuously" style="width:80px" id="play_button" onclick="empJSDoCallback(emp_info.callbacks.play_cb, 0)">[P]ause</button>
+    <button title="Progress a single update" style="width:80px" id="step_button" disabled=true onclick="empJSDoCallback(emp_info.callbacks.step_cb, 0)">[S]tep</button>
+    <button title="Duplicate current organism" style="width:80px" id="repro_button" disabled=false onclick="empJSDoCallback(emp_info.callbacks.repro_cb, 0)">[R]eplicate</button>
   </body>
 </html>

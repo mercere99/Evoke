@@ -38,12 +38,14 @@ public:
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
 
     // Link button callbacks to the proper handlers.
-    emp::MethodCallback<EvokeInterface> * play_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoPlay);
-    emp::MethodCallback<EvokeInterface> * step_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoStep);
+    auto play_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoPlay);
+    auto step_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoStep);
+    auto repro_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoRepro);
     EM_ASM_ARGS({
         emp_info.callbacks.play_cb = $0;
         emp_info.callbacks.step_cb = $1;
-      }, (int) play_cb, (int) step_cb);
+        emp_info.callbacks.repro_cb = $2;
+      }, (int) play_cb, (int) step_cb, (int) repro_cb);
 
 
     // Initialize organisms in the world.
@@ -105,6 +107,10 @@ public:
     }
   }
 
+  void DoRepro() {
+    // @CAO Handle reproduction here.
+  }
+
   bool OnKeydown(const emp::EventInfo & evt_info) {
     const int key_code = evt_info.key_code;
     bool return_value = true;
@@ -116,7 +122,7 @@ public:
       break;
     case 'r':                                     // R => Reproduce
     case 'R':
-      // Do something to reproduce.
+      DoRepro();
       break;
     case 's':                                     // S => Step
     case 'S':
