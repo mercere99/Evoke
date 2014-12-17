@@ -19,13 +19,13 @@ namespace evoke {
     dViewportPhysics & physics;
     std::vector<emp::Color> color_map;
 
-    BODY_TYPE * player_body;  // Which body, if any, is the player controlling?
+    BODY_TYPE * user_body;  // Which body, if any, is the player controlling?
 
   public:
     Viewport(int _x, int _y, int _width, int _height, dViewportPhysics & _physics)
       : CustomShape(_x, _y, _width, _height, this, &Viewport::Draw)
       , physics(_physics)
-      , player_body(NULL)
+      , user_body(NULL)
     {
       On("click", this, &Viewport::OnClick);
 
@@ -35,6 +35,8 @@ namespace evoke {
     }
     ~Viewport() { ; }
 
+    BODY_TYPE * GetUserBody() { return user_body; }
+    
     void Draw(emp::Canvas & canvas) {
       // Setup the black background
       canvas.SetFill("black");
@@ -51,7 +53,7 @@ namespace evoke {
         canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
         canvas.Stroke();
-        if (body == player_body) {
+        if (body == user_body) {
           canvas.Fill();
           canvas.SetStroke("black");
           canvas.BeginPath();
@@ -79,16 +81,16 @@ namespace evoke {
 
       switch (key_code) {
       case 37:                                      // LEFT ARROW (Turn Left)
-        if (player_body) player_body->TurnLeft();
+        if (user_body) user_body->TurnLeft();
         break;
       case 38:                                      // UP ARROW (Accellerate)
-        if (player_body) player_body->IncSpeed();
+        if (user_body) user_body->IncSpeed();
         break;
       case 39:                                      // RIGHT ARROW (Turn Right)
-        if (player_body) player_body->TurnRight();
+        if (user_body) user_body->TurnRight();
         break;
       case 40:                                      // DOWN ARROW (Breaks)
-        if (player_body) player_body->DecSpeed();
+        if (user_body) user_body->DecSpeed();
         break;
       default:
         return_value = false;
@@ -107,7 +109,7 @@ namespace evoke {
         if (body->GetPerimeter().Contains(mouse_pos)) {
           body->SetColorID(1);
           DrawLayer();
-          player_body = body;
+          user_body = body;
         }
       }
     }
