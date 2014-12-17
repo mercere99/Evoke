@@ -108,7 +108,9 @@ public:
   }
 
   void DoRepro() {
-    // @CAO Handle reproduction here.
+    dEvokeBody * body = viewport.GetUserBody();
+    if (!body) return;
+    physics.AddBody( body->BuildOffspring() );
   }
 
   bool OnKeydown(const emp::EventInfo & evt_info) {
