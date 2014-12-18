@@ -2,6 +2,7 @@
 
 #include "tools/config.h"
 #include "tools/callbacks.h"
+#include "tools/Random.h"
 #include "kinetic/Kinetic.h"
 #include "emtools/keypress.h"
 #include "geometry/Body2D.h"
@@ -21,6 +22,7 @@ private:
   emp::Stage stage;
   emp::Layer layer_anim;
   emp::cConfig config;
+  emp::Random random;
 
   emp::Physics2D<dEvokeBody, dEvokeControl, dEvokeBase> physics;
   dViewport viewport;
@@ -49,24 +51,25 @@ public:
 
 
     // Initialize organisms in the world.
-    auto org1 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), 8), NULL);
+    const int base_radius = 4;
+    auto org1 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), base_radius), NULL);
     physics.AddBody(org1);
-    auto org2 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(423,456), 8), NULL);
+    auto org2 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(423,456), base_radius), NULL);
     physics.AddBody(org2);
-    auto org3 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(300,300), 8), NULL);
+    auto org3 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(300,300), base_radius), NULL);
     physics.AddBody(org3);
     // org1->SetVelocity(7,3);
     // org1->SetTargetRadius(200);
 
-    const int base_radius = 8;
-    for (int i = base_radius+1; i < world_x-base_radius-1; i += 2*base_radius) {
-      // for (int j = 200; j < 250; j += 2*base_radius + 1) {
-      for (int j = 25; j < 250; j += 2*base_radius + 1) {
-        auto org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(i,j), base_radius), NULL);
-        // org->SetVelocity(0,1);
-        physics.AddBody(org);
-      }
-    }
+    // const int base_radius = 8;
+    // for (int i = base_radius+1; i < world_x-base_radius-1; i += 2*base_radius) {
+    //   // for (int j = 200; j < 250; j += 2*base_radius + 1) {
+    //   for (int j = 25; j < 250; j += 2*base_radius + 1) {
+    //     auto org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(i,j), base_radius), NULL);
+    //     // org->SetVelocity(0,1);
+    //     physics.AddBody(org);
+    //   }
+    // }
 
     // stage.ResizeMax(world_x, world_y);
 
@@ -110,7 +113,8 @@ public:
   void DoRepro() {
     dEvokeBody * body = viewport.GetUserBody();
     if (!body) return;
-    physics.AddBody( body->BuildOffspring() );
+    emp::Angle repro_angle(random.GetDouble(2.0 * emp::PI));
+    physics.AddBody( body->BuildOffspring( repro_angle.GetPoint(0.01) ) );
   }
 
   bool OnKeydown(const emp::EventInfo & evt_info) {
