@@ -80,6 +80,12 @@ namespace evoke {
       bool return_value = true;
 
       switch (key_code) {
+      case 187:
+        if (user_body) user_body->SetTargetRadius(user_body->GetTargetRadius() + 1);
+        break;
+      case 189:
+        if (user_body) user_body->SetTargetRadius(user_body->GetTargetRadius() - 1);
+        break;
       case 37:                                      // LEFT ARROW (Turn Left)
         if (user_body) user_body->TurnLeft();
         break;
@@ -93,6 +99,7 @@ namespace evoke {
         if (user_body) user_body->DecSpeed();
         break;
       default:
+        // emp::Alert(key_code);
         return_value = false;
       };
 
