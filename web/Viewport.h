@@ -81,10 +81,14 @@ namespace evoke {
 
       switch (key_code) {
       case 187:
+        // @CAO Put a cap on body size?
         if (user_body) user_body->SetTargetRadius(user_body->GetTargetRadius() + 1);
         break;
       case 189:
-        if (user_body) user_body->SetTargetRadius(user_body->GetTargetRadius() - 1);
+        if (user_body) {
+          int body_size = user_body->GetTargetRadius();
+          if (body_size > 1) user_body->SetTargetRadius(body_size - 1);
+        }
         break;
       case 37:                                      // LEFT ARROW (Turn Left)
         if (user_body) user_body->TurnLeft();
