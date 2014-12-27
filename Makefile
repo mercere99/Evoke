@@ -8,7 +8,7 @@ CFLAGS_nat := -g $(CFLAGS_all) -I/Users/charles/dev/GitHub/Empirical/
 # Emscripten compiler information
 CXX_web := emcc
 OFLAGS_web := -g4 -Werror -DEMP_DEBUG -I/Users/charles/dev/GitHub/Empirical/ -s TOTAL_MEMORY=67108864 -s ASSERTIONS=1
-# OFLAGS_web := -Oz -Werror -DNODEBUG -I/Users/charles/dev/GitHub/Empirical/ -s TOTAL_MEMORY=67108864
+# OFLAGS_web := -Oz -Werror -DNDEBUG -I/Users/charles/dev/GitHub/Empirical/ -s TOTAL_MEMORY=67108864
 CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/kinetic/library_kinetic.js  -s EXPORTED_FUNCTIONS="['_evokeMain', '_empJSDoCallback', '_empLoadString']"
 
 default: evoke
