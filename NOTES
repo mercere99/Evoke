@@ -1,12 +1,15 @@
 -=-= Next Steps =-=-
-* Get keyboard input working.
-* Allow user to control clicked-on organism.
-  - Left and Right to Turn
-  - Up for thrust, Down for breaks
-  - 'R' for replicate
-  - Spacebar for fire
-  - '+' and '-' for grown and shrink.  Adjust default speed?
+Build a simple organism (initially non-evolving) to control bodies
+
+-=-= Needed Fixes =-=-
+* Make sure keypresses that are not reacted to are passed back to the browser.
 
 -=-= Efficiency notes =-=-
 * Integers may be sufficiently faster than doubles that we should consider switching the
   physics to fixed-point ints.
+* Pause animation if nothing is happening in physics?
+  Find some other speedup mechanism to not process physics?
+* Try images instead of circles in viewer to see if it's faster.
+
+-=-= For CSE 450 =-=-
+* Body's should be able to fire missles
