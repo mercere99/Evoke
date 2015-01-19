@@ -8,7 +8,7 @@
 #include "tools/functions.h"
 #include "../organisms/OrgControl.h"
 
-#include "control.h"
+// #include "control.h"
 
 typedef double dEvokeBase;
 typedef evoke::OrgControl dEvokeControl;
@@ -18,7 +18,7 @@ class EvokeInterface {
 private:
   const dEvokeBase world_x = 512;
   const dEvokeBase world_y = 512;
-  emp::cConfig config;
+  emp::Config config;
 
   emp::Physics2D<dEvokeBody, dEvokeControl, dEvokeBase> physics;
 public:
@@ -53,7 +53,7 @@ public:
 int main() {
   std::cout << "Welcome to E\\/OKE!" << std::endl;
 
-  // emp::cConfig config;
+  // emp::Config config;
   // std::cout << config.RANDOM_SEED() << std::endl;
   // config.RANDOM_SEED(40);
   // std::cout << config.RANDOM_SEED() << std::endl;

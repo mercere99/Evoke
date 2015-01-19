@@ -1,3 +1,5 @@
 *~
 *.js.map
 *.dSYM
+tests
+a.out
