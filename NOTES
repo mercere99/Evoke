@@ -1,5 +1,17 @@
 -=-= Next Steps =-=-
 Build a simple organism (initially non-evolving) to control bodies
+Hook phenotypes into organisms
+Hook virtual hardware into organisms
+Create a world object
+Hook proper config into system
+Setup mutations
+Setup "optional" plug-in-like module.
+  - Each module should include:
+    * a code-header with new code
+    * a config-header with setting macros
+    * a run-time config file
+  - Each header should have a Setup() method that takes in the current world and hooks in
+    relevant functions.  This should only be called if the associated run-time config is included.
 
 -=-= Needed Fixes =-=-
 * Make sure keypresses that are not reacted to are passed back to the browser.
@@ -12,4 +24,4 @@ Build a simple organism (initially non-evolving) to control bodies
 * Try images instead of circles in viewer to see if it's faster.
 
 -=-= For CSE 450 =-=-
-* Body's should be able to fire missles
+* Bodies should be able to fire missles
