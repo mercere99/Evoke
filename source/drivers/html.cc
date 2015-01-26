@@ -1,5 +1,9 @@
 #include <emscripten.h>
 
+#define EMP_CONFIG_FILE "source/evoke_config.h"
+
+#include "../defs.h"
+
 #include "tools/config.h"
 #include "tools/callbacks.h"
 #include "tools/Random.h"
@@ -8,7 +12,7 @@
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
 #include "../organisms/OrgControl.h"
-#include "../web/Viewport.h"
+#include "../webtools/Viewport.h"
 
 typedef double dEvokeBase;
 typedef evoke::OrgControl dEvokeControl;
@@ -21,7 +25,7 @@ private:
   const dEvokeBase world_y = 512;
   emp::Stage stage;
   emp::Layer layer_anim;
-  emp::cConfig config;
+  emp::Config config;
   emp::Random random;
 
   emp::Physics2D<dEvokeBody, dEvokeControl, dEvokeBase> physics;

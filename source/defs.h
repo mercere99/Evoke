@@ -7,7 +7,7 @@
 //
 
 #include "tools/config.h"
-#include "tools/Traits.h"
+#include "tools/Trait.h"
 
 // If we haven't specified a config file in out compiler options, set the default here.
 #ifndef EMP_CONFIG_FILE

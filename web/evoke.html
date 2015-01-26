@@ -12,8 +12,7 @@
     <script type="text/javascript" src="../evoke.js"></script>
     <script>
       empJSDoCallback = Module.cwrap('empJSDoCallback', null, ['number', 'number']);
-      evokeMain = Module.cwrap('evokeMain', 'number');
-      var result = evokeMain();
+      var result = _evokeMain();
     </script>
 
     <button title="Run continuously" style="width:80px" id="play_button" onclick="empJSDoCallback(emp_info.callbacks.play_cb, 0)">[P]ause</button>
