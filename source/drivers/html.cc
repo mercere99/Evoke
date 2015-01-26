@@ -1,35 +1,24 @@
 #include <emscripten.h>
 
-#define EMP_CONFIG_FILE "source/evoke_config.h"
-
 #include "../defs.h"
 
-#include "tools/config.h"
 #include "tools/callbacks.h"
-#include "tools/Random.h"
 #include "kinetic/Kinetic.h"
 #include "emtools/keypress.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
-#include "../organisms/OrgControl.h"
-#include "../webtools/Viewport.h"
-
-typedef double dEvokeBase;
-typedef evoke::OrgControl dEvokeControl;
-typedef emp::CircleBody2D< dEvokeControl, dEvokeBase > dEvokeBody;
-typedef evoke::Viewport<dEvokeBody, dEvokeControl, dEvokeBase> dViewport;
+#include "../main/World.h"
 
 class EvokeInterface {
 private:
-  const dEvokeBase world_x = 512;
-  const dEvokeBase world_y = 512;
+  const evoke::dBase world_x = 512;
+  const evoke::dBase world_y = 512;
   emp::Stage stage;
   emp::Layer layer_anim;
-  emp::Config config;
-  emp::Random random;
+  evoke::World world;
 
-  emp::Physics2D<dEvokeBody, dEvokeControl, dEvokeBase> physics;
-  dViewport viewport;
+  emp::Physics2D<evoke::dBody, evoke::dControl, evoke::dBase> physics;
+  evoke::dViewport viewport;
 
   emp::Animation<EvokeInterface> anim_interface;
   emp::KeypressManager keypress_manager;
@@ -40,7 +29,7 @@ public:
     , viewport(0, 0, world_x, world_y, physics)
   {    
     // Link keypresses to the proper handlers
-    keypress_manager.AddKeydownCallback(std::bind(&dViewport::OnKeydown, &viewport, _1));
+    keypress_manager.AddKeydownCallback(std::bind(&evoke::dViewport::OnKeydown, &viewport, _1));
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
 
     // Link button callbacks to the proper handlers.
@@ -56,11 +45,11 @@ public:
 
     // Initialize organisms in the world.
     const int base_radius = 4;
-    auto org1 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(123,456), base_radius), NULL);
+    auto org1 = new evoke::dBody(emp::Circle<evoke::dBase>(emp::Point<evoke::dBase>(123,456), base_radius), NULL);
     physics.AddBody(org1);
-    auto org2 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(423,456), base_radius), NULL);
+    auto org2 = new evoke::dBody(emp::Circle<evoke::dBase>(emp::Point<evoke::dBase>(423,456), base_radius), NULL);
     physics.AddBody(org2);
-    auto org3 = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(300,300), base_radius), NULL);
+    auto org3 = new evoke::dBody(emp::Circle<evoke::dBase>(emp::Point<evoke::dBase>(300,300), base_radius), NULL);
     physics.AddBody(org3);
     // org1->SetVelocity(7,3);
     // org1->SetTargetRadius(200);
@@ -69,7 +58,7 @@ public:
     // for (int i = base_radius+1; i < world_x-base_radius-1; i += 2*base_radius) {
     //   // for (int j = 200; j < 250; j += 2*base_radius + 1) {
     //   for (int j = 25; j < 250; j += 2*base_radius + 1) {
-    //     auto org = new dEvokeBody(emp::Circle<dEvokeBase>(emp::Point<dEvokeBase>(i,j), base_radius), NULL);
+    //     auto org = new evoke::dBody(emp::Circle<evoke::dBase>(emp::Point<evoke::dBase>(i,j), base_radius), NULL);
     //     // org->SetVelocity(0,1);
     //     physics.AddBody(org);
     //   }
@@ -115,9 +104,9 @@ public:
   }
 
   void DoRepro() {
-    dEvokeBody * body = viewport.GetUserBody();
+    evoke::dBody * body = viewport.GetUserBody();
     if (!body) return;
-    emp::Angle repro_angle(random.GetDouble(2.0 * emp::PI));
+    emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
     physics.AddBody( body->BuildOffspring( repro_angle.GetPoint(0.01) ) );
   }
 
