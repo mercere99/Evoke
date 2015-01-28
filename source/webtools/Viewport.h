@@ -2,8 +2,9 @@
 #define EVOKE_VIEWPORT_H
 
 #include "kinetic/Kinetic.h"
-#include "geometry/Physics2D.h"
 #include "tools/functions.h"
+
+#include "../main/World.h"
 
 namespace evoke {
 
@@ -11,20 +12,19 @@ namespace evoke {
   //   BODY_TYPE is emp::CircleBody2D
   //   BODY_INFO is evoke::OrgControl
 
-  // Viewport displays a physics environment on the screen and allows some manipulation.
+  // Viewport displays a world on the screen and allows some manipulation.
   template <typename BODY_TYPE, typename BODY_INFO, typename BASE_TYPE> 
   class Viewport : public emp::CustomShape {
   private:
-    typedef emp::Physics2D<BODY_TYPE, BODY_INFO, BASE_TYPE> dViewportPhysics;
-    dViewportPhysics & physics;
+    World & world;
     std::vector<emp::Color> color_map;
 
     BODY_TYPE * user_body;  // Which body, if any, is the player controlling?
 
   public:
-    Viewport(int _x, int _y, int _width, int _height, dViewportPhysics & _physics)
-      : CustomShape(_x, _y, _width, _height, this, &Viewport::Draw)
-      , physics(_physics)
+    Viewport(int _x, int _y, evoke::World & _world)
+      : CustomShape(_x, _y, world.width, world.height, this, &Viewport::Draw)
+      , world(_world)
       , user_body(NULL)
     {
       On("click", this, &Viewport::OnClick);
@@ -45,8 +45,8 @@ namespace evoke {
       // Draw all shapes in the physics.
       canvas.SetStroke("white");
       canvas.SetFill("yellow");
-      // const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
-      const std::vector<BODY_TYPE *> & active_body_set = physics.GetBodySet();
+      // const std::unordered_set<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
+      const std::vector<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
       for (const auto body : active_body_set) {
         if (body->GetColorID() < 0 || body->GetColorID() > 2) emp::Alert((int) active_body_set.size());
         canvas.SetStroke(color_map[body->GetColorID()]);
@@ -114,8 +114,8 @@ namespace evoke {
       const emp::Point<BASE_TYPE> mouse_pos(evt.layer_x - GetX(), evt.layer_y - GetY());
 
       // Figure out which circle was clicked in.
-      // const std::unordered_set<BODY_TYPE *> & active_body_set = physics.GetBodySet();
-      const std::vector<BODY_TYPE *> & active_body_set = physics.GetBodySet();
+      // const std::unordered_set<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
+      const std::vector<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
       for (const auto body : active_body_set) {
         if (body->GetPerimeter().Contains(mouse_pos)) {
           body->SetColorID(1);

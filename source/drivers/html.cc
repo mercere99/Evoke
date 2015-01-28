@@ -7,7 +7,14 @@
 #include "emtools/keypress.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
+
 #include "../main/World.h"
+#include "../organisms/OrgControl.h"
+#include "../webtools/Viewport.h"
+
+namespace evoke {
+  typedef Viewport<dBody, dControl, dBase> dViewport;
+}
 
 class EvokeInterface {
 private:
@@ -21,8 +28,8 @@ private:
   emp::KeypressManager keypress_manager;
 public:
   EvokeInterface()
-    : stage(world.world_x, world.world_y, "container")
-    , viewport(0, 0, world.world_x, world.world_y, world.physics)
+    : stage(world.width, world.height, "container")
+    , viewport(0, 0, world)
   {    
     // Link keypresses to the proper handlers
     keypress_manager.AddKeydownCallback(std::bind(&evoke::dViewport::OnKeydown, &viewport, _1));
