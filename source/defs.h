@@ -13,6 +13,7 @@
 #endif
 
 #include "geometry/Body2D.h"
+#include "hardware/HardwareCPU.h"
 #include "tools/config.h"
 #include "tools/Trait.h"
 
@@ -20,11 +21,13 @@ namespace evoke {
 
   // Pre-declarations needed for types below.
   struct World;
-  class OrgControl;
+  template <typename HARDWARE> class OrgControl;
 
   typedef double dBase;
-  typedef OrgControl dControl;
+  typedef OrgControl<emp::HardwareCPU<>> dControl;
   typedef emp::CircleBody2D< dControl, dBase > dBody;
+  typedef emp::Point<evoke::dBase> dPoint;
+  typedef emp::Circle<evoke::dBase> dCircle;
   
   // Construction of the specific Phenotype types.
   typedef emp::TraitManager<int, double, bool, std::string,
