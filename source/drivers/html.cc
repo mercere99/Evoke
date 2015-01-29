@@ -21,7 +21,6 @@ private:
   evoke::World world;
   emp::Stage stage;
   emp::Layer layer_anim;
-
   evoke::dViewport viewport;
 
   emp::Animation<EvokeInterface> anim_interface;
@@ -48,11 +47,11 @@ public:
 
     // Initialize organisms in the world.
     const int base_radius = 4;
-    auto org1 = new evoke::dBody(emp::Circle<evoke::dBase>(emp::Point<evoke::dBase>(123,456), base_radius), NULL);
+    auto org1 = new evoke::dBody(evoke::dCircle(evoke::dPoint(123,456), base_radius), NULL);
     world.physics.AddBody(org1);
-    auto org2 = new evoke::dBody(emp::Circle<evoke::dBase>(emp::Point<evoke::dBase>(423,456), base_radius), NULL);
+    auto org2 = new evoke::dBody(evoke::dCircle(evoke::dPoint(423,456), base_radius), NULL);
     world.physics.AddBody(org2);
-    auto org3 = new evoke::dBody(emp::Circle<evoke::dBase>(emp::Point<evoke::dBase>(300,300), base_radius), NULL);
+    auto org3 = new evoke::dBody(evoke::dCircle(evoke::dPoint(300,300), base_radius), NULL);
     world.physics.AddBody(org3);
     // org1->SetVelocity(7,3);
     // org1->SetTargetRadius(200);
@@ -61,7 +60,7 @@ public:
     // for (int i = base_radius+1; i < world_x-base_radius-1; i += 2*base_radius) {
     //   // for (int j = 200; j < 250; j += 2*base_radius + 1) {
     //   for (int j = 25; j < 250; j += 2*base_radius + 1) {
-    //     auto org = new evoke::dBody(emp::Circle<evoke::dBase>(emp::Point<evoke::dBase>(i,j), base_radius), NULL);
+    //     auto org = new evoke::dBody(evoke::dCircle(evoke::dPoint(i,j), base_radius), NULL);
     //     // org->SetVelocity(0,1);
     //     world.physics.AddBody(org);
     //   }

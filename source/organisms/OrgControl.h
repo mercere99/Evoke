@@ -3,10 +3,13 @@
 
 namespace evoke {
 
+  template <typename HARDWARE>
   class OrgControl {
   private:
+    HARDWARE hardware;
   public:
-    OrgControl() { ; }
+    OrgControl(const HARDWARE & hw_prototype) : hardware(hw_prototype) { ; }
+    OrgControl(const OrgControl & prototype) : OrgControl(prototype.hardware) { ; }
     ~OrgControl() { ; }
   };
 
