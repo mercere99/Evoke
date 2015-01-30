@@ -23,6 +23,7 @@ namespace evoke {
   struct World;
   template <typename HARDWARE> class OrgControl;
 
+  // Simple typedefs...
   typedef double dBase;
   typedef OrgControl<emp::HardwareCPU<>> dControl;
   typedef emp::CircleBody2D< dControl, dBase > dBody;
