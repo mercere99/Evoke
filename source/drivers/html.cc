@@ -19,11 +19,11 @@ namespace evoke {
 class EvokeInterface {
 private:
   evoke::World world;
-  emp::Stage stage;
-  emp::Layer layer_anim;
+  emp::Kinetic::Stage stage;
+  emp::Kinetic::Layer layer_anim;
   evoke::dViewport viewport;
 
-  emp::Animation<EvokeInterface> anim_interface;
+  emp::Kinetic::Animation<EvokeInterface> anim_interface;
   emp::KeypressManager keypress_manager;
 public:
   EvokeInterface()
@@ -53,20 +53,6 @@ public:
     world.physics.AddBody(org2);
     auto org3 = new evoke::dBody(evoke::dCircle(evoke::dPoint(300,300), base_radius), NULL);
     world.physics.AddBody(org3);
-    // org1->SetVelocity(7,3);
-    // org1->SetTargetRadius(200);
-
-    // const int base_radius = 8;
-    // for (int i = base_radius+1; i < world_x-base_radius-1; i += 2*base_radius) {
-    //   // for (int j = 200; j < 250; j += 2*base_radius + 1) {
-    //   for (int j = 25; j < 250; j += 2*base_radius + 1) {
-    //     auto org = new evoke::dBody(evoke::dCircle(evoke::dPoint(i,j), base_radius), NULL);
-    //     // org->SetVelocity(0,1);
-    //     world.physics.AddBody(org);
-    //   }
-    // }
-
-    // stage.ResizeMax(world_x, world_y);
 
     layer_anim.Add(viewport);
     stage.Add(layer_anim);
@@ -77,7 +63,7 @@ public:
 
   ~EvokeInterface() { ; }
 
-  void Animate(const emp::AnimationFrame & frame) {
+  void Animate(const emp::Kinetic::AnimationFrame & frame) {
     world.physics.Update();
   }
 

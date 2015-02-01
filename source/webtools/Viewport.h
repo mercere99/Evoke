@@ -8,13 +8,15 @@
 
 namespace evoke {
 
+  namespace Kinetic = emp::Kinetic;
+
   // @CAO For now we are assuming that:
   //   BODY_TYPE is emp::CircleBody2D
   //   BODY_INFO is evoke::OrgControl
 
   // Viewport displays a world on the screen and allows some manipulation.
   template <typename BODY_TYPE, typename BODY_INFO, typename BASE_TYPE> 
-  class Viewport : public emp::CustomShape {
+  class Viewport : public Kinetic::CustomShape {
   private:
     World & world;
     std::vector<emp::Color> color_map;
@@ -37,7 +39,8 @@ namespace evoke {
 
     BODY_TYPE * GetUserBody() { return user_body; }
     
-    void Draw(emp::Canvas & canvas) {
+    void Draw(Kinetic::Canvas & canvas) {
+
       // Setup the black background
       canvas.SetFill("black");
       canvas.Rect(0, 0, GetWidth(), GetHeight(), true);
@@ -64,6 +67,8 @@ namespace evoke {
           canvas.SetStroke("white");
         }
       }
+
+      static int run_count = 0; if (run_count++ < 4) emp::Alert((int) active_body_set.size());
 
       // Make the canvas respond to the mouse.
       canvas.BeginPath();
