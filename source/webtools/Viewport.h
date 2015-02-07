@@ -25,7 +25,7 @@ namespace evoke {
 
   public:
     Viewport(int _x, int _y, evoke::World & _world)
-      : CustomShape(_x, _y, world.width, world.height, this, &Viewport::Draw)
+      : CustomShape(_x, _y, _world.width, _world.height, this, &Viewport::Draw)
       , world(_world)
       , user_body(NULL)
     {
