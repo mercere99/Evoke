@@ -51,7 +51,7 @@ namespace evoke {
       // const std::unordered_set<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
       const std::vector<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
       for (const auto body : active_body_set) {
-        if (body->GetColorID() < 0 || body->GetColorID() > 2) emp::Alert((int) active_body_set.size());
+        // if (body->GetColorID() < 0 || body->GetColorID() > 2) emp::Alert((int) active_body_set.size());
         canvas.SetStroke(color_map[body->GetColorID()]);
         canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
@@ -67,8 +67,6 @@ namespace evoke {
           canvas.SetStroke("white");
         }
       }
-
-      static int run_count = 0; if (run_count++ < 4) emp::Alert((int) active_body_set.size());
 
       // Make the canvas respond to the mouse.
       canvas.BeginPath();
