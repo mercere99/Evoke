@@ -51,7 +51,7 @@ namespace evoke {
       // const std::unordered_set<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
       const std::vector<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
       for (const auto body : active_body_set) {
-        // if (body->GetColorID() < 0 || body->GetColorID() > 2) emp::Alert((int) active_body_set.size());
+        emp_assert(body->GetColorID() >= 0 && body->GetColorID() <= 2);
         canvas.SetStroke(color_map[body->GetColorID()]);
         canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
@@ -106,7 +106,7 @@ namespace evoke {
         if (user_body) user_body->DecSpeed();
         break;
       default:
-        // emp::Alert(key_code);
+        // emp::Alert("Unknown key code: ", key_code);
         return_value = false;
       };
 
@@ -114,6 +114,10 @@ namespace evoke {
     }
 
     void OnClick(const emp::EventInfo & evt) {
+      emp::Alert("OnClick() for object ID ", obj_id, " of ", GetNumObjs());
+
+      emp_assert(obj_id >= 0 && obj_id < GetNumObjs());
+
       const emp::Point<BASE_TYPE> mouse_pos(evt.layer_x - GetX(), evt.layer_y - GetY());
 
       // Figure out which circle was clicked in.
