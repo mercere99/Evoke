@@ -1,5 +1,5 @@
 # Flags to use regardless of compiler
-CFLAGS_all := -Wall -std=c++11 -I../Empirical/ -I./
+CFLAGS_all := -Wall -Wno-unused-function -std=c++11 -I../Empirical/ -I./
 
 # Native compiler information
 CXX_nat := g++-4.8
@@ -22,3 +22,7 @@ evoke.js: source/drivers/html.cc
 
 clean:
 	rm -f evoke evoke.js *.js.map *~ source/*.o source/*/*.o
+
+# Debugging information
+#print-%: ; @echo $*=$($*)
+print-%: ; @echo '$(subst ','\'',$*=$($*))'
