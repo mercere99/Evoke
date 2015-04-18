@@ -11,7 +11,7 @@
 //
 
 
-#include "tools/config.h"
+#include "config/config.h"
 #include "tools/Random.h"
 
 namespace evoke {

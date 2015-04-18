@@ -12,9 +12,9 @@
 #define EMP_CONFIG_FILE "source/evoke_config.h"
 #endif
 
+#include "config/config.h"
 #include "geometry/Body2D.h"
 #include "hardware/HardwareCPU.h"
-#include "tools/config.h"
 #include "tools/Trait.h"
 
 namespace evoke {
