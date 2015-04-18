@@ -47,13 +47,17 @@ public:
 
     // Initialize organisms in the world.
     const int base_radius = 4;
-    auto org1 = new evoke::dBody(evoke::dCircle(evoke::dPoint(123,456), base_radius), NULL);
-    world.physics.AddBody(org1);
-    auto org2 = new evoke::dBody(evoke::dCircle(evoke::dPoint(423,456), base_radius), NULL);
-    world.physics.AddBody(org2);
-    auto org3 = new evoke::dBody(evoke::dCircle(evoke::dPoint(300,300), base_radius), NULL);
-    world.physics.AddBody(org3);
 
+    auto org = new evoke::dBody(evoke::dCircle(evoke::dPoint(world.width/2,world.height/2), base_radius), NULL);
+    world.physics.AddBody(org);
+
+    // auto org1 = new evoke::dBody(evoke::dCircle(evoke::dPoint(123,456), base_radius), NULL);
+    // world.physics.AddBody(org1);
+    // auto org2 = new evoke::dBody(evoke::dCircle(evoke::dPoint(423,456), base_radius), NULL);
+    // world.physics.AddBody(org2);
+    // auto org3 = new evoke::dBody(evoke::dCircle(evoke::dPoint(300,300), base_radius), NULL);
+    // world.physics.AddBody(org3);
+ 
     layer_anim.Add(viewport);
     stage.Add(layer_anim);
 
@@ -65,6 +69,18 @@ public:
 
   void Animate(const emp::Kinetic::AnimationFrame & frame) {
     world.physics.Update();
+
+    // Test which organisms should replicate.
+    double avg_repro_time = 10.0; // In seconds
+    double repro_prob = ((double) frame.time_diff) / (avg_repro_time * 1000.0);
+
+    for (auto * body : world.physics.GetBodySet()) {
+      if (world.random.P(repro_prob)) {
+        emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
+        world.physics.AddBody( body->BuildOffspring( repro_angle.GetPoint(0.01) ) );
+      }
+    }
+
   }
 
   void DoPlay() {
