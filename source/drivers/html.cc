@@ -74,10 +74,12 @@ public:
     double avg_repro_time = 10.0; // In seconds
     double repro_prob = ((double) frame.time_diff) / (avg_repro_time * 1000.0);
 
-    for (auto * body : world.physics.GetBodySet()) {
-      if (world.random.P(repro_prob)) {
+    auto & body_set = world.physics.GetBodySet();
+
+    for (auto * body : body_set) {
+      if (world.random.P(repro_prob) || body_set.size() == 1) {
         emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
-        world.physics.AddBody( body->BuildOffspring( repro_angle.GetPoint(0.01) ) );
+        world.physics.AddBody( body->BuildOffspring( repro_angle.GetPoint(0.1) ) );
       }
     }
 
