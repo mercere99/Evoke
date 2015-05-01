@@ -46,7 +46,8 @@ public:
 
 
     // Initialize organisms in the world.
-    const int base_radius = 4;
+    // const int base_radius = 4;
+    const int base_radius = 6;
 
     auto org = new evoke::dBody(evoke::dCircle(evoke::dPoint(world.width/2,world.height/2), base_radius), NULL);
     world.physics.AddBody(org);
@@ -71,14 +72,19 @@ public:
     world.physics.Update();
 
     // Test which organisms should replicate.
-    double avg_repro_time = 10.0; // In seconds
+    const double avg_repro_time = 10.0; // In seconds
     double repro_prob = ((double) frame.time_diff) / (avg_repro_time * 1000.0);
 
+    repro_prob = 0.003;
+
     auto & body_set = world.physics.GetBodySet();
+    if (body_set.size())
 
     for (auto * body : body_set) {
+      if (body->IsReproducing()) continue; // Must finish offspring before starting another.
       if (world.random.P(repro_prob) || body_set.size() == 1) {
         emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
+
         world.physics.AddBody( body->BuildOffspring( repro_angle.GetPoint(0.1) ) );
       }
     }
