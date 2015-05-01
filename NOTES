@@ -1,4 +1,10 @@
 -=-= Next Steps =-=-
+Setup evolution of colors
+Change reproduction button to toggel whether orgs are replicating on their own.
+Setup timing to use Emscripten run instead of animation.
+Move viewer from Kinetic to straight canvas
+Setup a few simple on-screen data trackers (e.g., pop size)
+Make sure organisms can be linked to more than one other organism
 Build a simple organism (initially non-evolving) to control bodies
 Hook phenotypes into organisms
 Hook virtual hardware into organisms
