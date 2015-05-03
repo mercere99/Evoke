@@ -46,26 +46,41 @@ namespace evoke {
       canvas.Rect(0, 0, GetWidth(), GetHeight(), true);
 
       // Draw all shapes in the physics.
-      canvas.SetStroke("white");
-      canvas.SetFill("yellow");
+      // canvas.SetStroke("white");
+      // canvas.SetFill("yellow");
       // const std::unordered_set<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
       const std::vector<BODY_TYPE *> & active_body_set = world.physics.GetBodySet();
+      // for (const auto body : active_body_set) {
+      //   emp_assert(body->GetColorID() >= 0 && body->GetColorID() <= 2);
+      //   canvas.SetStroke(color_map[body->GetColorID()]);
+      //   canvas.BeginPath();
+      //   canvas.Circle(body->GetPerimeter());
+      //   canvas.Stroke();
+      //   if (body == user_body) {
+      //     canvas.Fill();
+      //     canvas.SetStroke("black");
+      //     canvas.BeginPath();
+      //     canvas.MoveTo(body->GetAnchor());
+      //     canvas.LineTo(body->GetAnchor() + emp::Point<double>(body->GetOrientation().Sin(), body->GetOrientation().Cos()) * body->GetRadius());
+      //     canvas.ClosePath();
+      //     canvas.Stroke();
+      //     canvas.SetStroke("white");
+      //   }
+      // }
+      canvas.SetStroke("white");
+      // canvas.SetFill("#221111");
+      canvas.SetFill("hsl(0,50%,10%)");
       for (const auto body : active_body_set) {
-        emp_assert(body->GetColorID() >= 0 && body->GetColorID() <= 2);
-        canvas.SetStroke(color_map[body->GetColorID()]);
+        // emp_assert(body->GetColorID() >= 0 && body->GetColorID() <= 2);
+        // canvas.SetStroke(color_map[body->GetColorID()]);
+        canvas.SetStroke("white");
+        canvas.SetFill( emp::to_string("hsl(", body->GetColorID(), ",50%,20%") );
+        // canvas.SetFill("hsl(0,50%,10%)");
         canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
         canvas.Stroke();
-        if (body == user_body) {
-          canvas.Fill();
-          canvas.SetStroke("black");
-          canvas.BeginPath();
-          canvas.MoveTo(body->GetAnchor());
-          canvas.LineTo(body->GetAnchor() + emp::Point<double>(body->GetOrientation().Sin(), body->GetOrientation().Cos()) * body->GetRadius());
-          canvas.ClosePath();
-          canvas.Stroke();
-          canvas.SetStroke("white");
-        }
+        canvas.Fill();
+        canvas.SetStroke("white");
       }
 
       // Make the canvas respond to the mouse.
@@ -114,8 +129,6 @@ namespace evoke {
     }
 
     void OnClick(const emp::EventInfo & evt) {
-      emp::Alert("OnClick() for object ID ", obj_id, " of ", GetNumObjs());
-
       emp_assert(obj_id >= 0 && obj_id < GetNumObjs());
 
       const emp::Point<BASE_TYPE> mouse_pos(evt.layer_x - GetX(), evt.layer_y - GetY());
