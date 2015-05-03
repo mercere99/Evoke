@@ -1,7 +1,10 @@
 -=-= Next Steps =-=-
-Setup evolution of colors
-Change reproduction button to toggel whether orgs are replicating on their own.
 Setup timing to use Emscripten run instead of animation.
+Change reproduction button to toggel whether orgs are replicating on their own.
+Make reproduction slow down under pressure (to minimize popping)
+Setup proper body info types (For color, CPUs, Markov Brains, etc.)
+Build base classes for bodies?
+Make physics always double-based.
 Move viewer from Kinetic to straight canvas
 Setup a few simple on-screen data trackers (e.g., pop size)
 Make sure organisms can be linked to more than one other organism
