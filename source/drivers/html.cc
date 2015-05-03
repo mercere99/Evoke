@@ -84,8 +84,14 @@ public:
       if (body->IsReproducing()) continue; // Must finish offspring before starting another.
       if (world.random.P(repro_prob) || body_set.size() == 1) {
         emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
-
-        world.physics.AddBody( body->BuildOffspring( repro_angle.GetPoint(0.1) ) );
+        auto * new_body = body->BuildOffspring( repro_angle.GetPoint(0.1) );
+        if (world.random.P(0.95)) {
+          new_body->SetColorID(body->GetColorID());
+        }
+        else {
+          new_body->SetColorID( world.random.GetInt(360) );
+        }
+        world.physics.AddBody( new_body );
       }
     }
 
