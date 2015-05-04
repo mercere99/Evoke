@@ -3,3 +3,5 @@
 *.dSYM
 tests
 a.out
+*.mem
+evoke.js
