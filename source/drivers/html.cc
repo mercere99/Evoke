@@ -81,7 +81,9 @@ public:
     if (body_set.size())
 
     for (auto * body : body_set) {
-      if (body->IsReproducing()) continue; // Must finish offspring before starting another.
+      // Bodies that are reproducing cannot produce a second offspring until they are done.
+      // Bodies under pressure do not produce offspring.
+      if (body->IsReproducing() || body->GetPressure() > 0.0) continue;
       if (world.random.P(repro_prob) || body_set.size() == 1) {
         emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
         auto * new_body = body->BuildOffspring( repro_angle.GetPoint(0.1) );
@@ -156,8 +158,10 @@ public:
 
 EvokeInterface * evoke_interface;
 
-extern "C" int evokeMain()
+// extern "C" int evokeMain()
+extern "C" int main()
 {
+  EMP_SETUP();
   evoke_interface = new EvokeInterface();
 
   return 0;
