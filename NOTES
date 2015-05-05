@@ -1,7 +1,6 @@
 -=-= Next Steps =-=-
 Setup timing to use Emscripten run instead of animation.
 Change reproduction button to toggel whether orgs are replicating on their own.
-Make reproduction slow down under pressure (to minimize popping)
 Setup proper body info types (For color, CPUs, Markov Brains, etc.)
 Build base classes for bodies?
 Make physics always double-based.
@@ -22,15 +21,42 @@ Setup "optional" plug-in-like module.
   - Each header should have a Setup() method that takes in the current world and hooks in
     relevant functions.  This should only be called if the associated run-time config is included.
 
+-=-= Configuration Notes =-=-
+Already could add:
+- Mutation rate
+- Pressure for popping
+- Pressure for slowing repro (and by how much?)
+- World size / org size
+
+Type of population
+- Continuous (default)
+- grid-based (square & hex)
+- well mixed
+- deme variations of above.
+
+Type of organisms:
+- Just color
+- Virtual CPU
+- Markov brains
+- (neural net?  CPPN grown?)
+- (more traditional GP?)
+
+
 -=-= Needed Fixes =-=-
 * Make sure keypresses that are not reacted to are passed back to the browser.
 
 -=-= Efficiency notes =-=-
+* Need to profile whole thing!
 * Integers may be sufficiently faster than doubles that we should consider switching the
-  physics to fixed-point ints.
+  physics to fixed-point ints. (probably not due to desire for simplicity, but may want to test)
 * Pause animation if nothing is happening in physics?
-  Find some other speedup mechanism to not process physics?
+  Find some other speedup mechanism to not process physics?  For example:
+    don't compare from orgs that haven't moved, just place them first.
+    don't move circles if under a certain threshold (0.5?)
 * Try images instead of circles in viewer to see if it's faster.
+* Print frame rate on the screen so slowdowns can be more easily quantified.
+* Build controls where we add more circles but don't process physics to see how much simple
+  screen drawing is costing us.
 
 -=-= For CSE 450 =-=-
 * Bodies should be able to fire missles
