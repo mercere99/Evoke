@@ -7,7 +7,7 @@ CFLAGS_nat := -g $(CFLAGS_all)
 
 # Emscripten compiler information
 CXX_web := emcc
-OFLAGS_web := -g4 -Werror -s TOTAL_MEMORY=67108864 # -s DEMANGLE_SUPPORT=1 # -s SAFE_HEAP=1
+OFLAGS_web := -g4 -Werror -pedantic -Wno-dollar-in-identifier-extension -s TOTAL_MEMORY=67108864 # -s DEMANGLE_SUPPORT=1 # -s SAFE_HEAP=1
 #OFLAGS_web := -Werror -DNDEBUG -s TOTAL_MEMORY=67108864
 #OFLAGS_web := -Oz -Werror -DNDEBUG -s TOTAL_MEMORY=67108864 -s ASSERTIONS=1
 #OFLAGS_web := -Os -Werror -DNDEBUG -s TOTAL_MEMORY=67108864
