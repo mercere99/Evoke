@@ -3,11 +3,12 @@
 
 #include "../defs.h"
 
-#include "tools/config.h"
+#include "config/config.h"
 #include "tools/callbacks.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
 #include "tools/functions.h"
+
 #include "../organisms/OrgControl.h"
 
 class EvokeInterface {
