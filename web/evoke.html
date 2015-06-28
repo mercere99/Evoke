@@ -7,13 +7,13 @@
 
     <h1>Welcome to Evoke!</h1>
     
-    <div id="container"></div>
+    <div id='container'></div>
     <script type="text/javascript" src="../../Empirical/kinetic/kinetic-v5.1.0.min.js"></script>
     <script type="text/javascript" src="../evoke.js"></script>
 
-    <button title="Run continuously" style="width:80px" id="play_button" onclick="empJSDoCallback(emp_info.callbacks.play_cb, 0)">[P]ause</button>
-    <button title="Progress a single update" style="width:80px" id="step_button" disabled=true onclick="empJSDoCallback(emp_info.callbacks.step_cb, 0)">[S]tep</button>
-    <button title="Duplicate current organism" style="width:80px" id="repro_button" disabled=false onclick="empJSDoCallback(emp_info.callbacks.repro_cb, 0)">[R]eplicate</button>
+    <button title="Run continuously" style="width:80px" id="play_button" onclick="empJSDoCallback(emp_kinetic.callbacks.play_cb, 0)">[P]ause</button>
+    <button title="Progress a single update" style="width:80px" id="step_button" disabled=true onclick="empJSDoCallback(emp_kinetic.callbacks.step_cb, 0)">[S]tep</button>
+    <button title="Duplicate current organism" style="width:80px" id="repro_button" disabled=false onclick="empJSDoCallback(emp_kinetic.callbacks.repro_cb, 0)">[R]eplicate</button>
 
   </body>
 </html>

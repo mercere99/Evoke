@@ -12,6 +12,8 @@
 #include "../organisms/OrgControl.h"
 #include "../webtools/Viewport.h"
 
+#include "UI/UI.h"
+
 namespace evoke {
   typedef Viewport<dBody, dControl, dBase> dViewport;
 }
@@ -39,9 +41,9 @@ public:
     auto step_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoStep);
     auto repro_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoRepro);
     EM_ASM_ARGS({
-        emp_info.callbacks.play_cb = $0;
-        emp_info.callbacks.step_cb = $1;
-        emp_info.callbacks.repro_cb = $2;
+        emp_kinetic.callbacks.play_cb = $0;
+        emp_kinetic.callbacks.step_cb = $1;
+        emp_kinetic.callbacks.repro_cb = $2;
       }, (int) play_cb, (int) step_cb, (int) repro_cb);
 
 
@@ -83,7 +85,8 @@ public:
     for (auto * body : body_set) {
       // Bodies that are reproducing cannot produce a second offspring until they are done.
       // Bodies under pressure do not produce offspring.
-      if (body->IsReproducing() || body->GetPressure() > 0.0) continue;
+//      if (body->IsReproducing() || body->GetPressure() > 0.0) continue;
+      if (body->IsReproducing() || body->GetPressure() > 1.0) continue;
       if (world.random.P(repro_prob) || body_set.size() == 1) {
         emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
         auto * new_body = body->BuildOffspring( repro_angle.GetPoint(0.1) );
