@@ -2,17 +2,19 @@
 
 #include "../defs.h"
 
-#include "tools/callbacks.h"
-#include "kinetic/Kinetic.h"
-#include "emtools/keypress.h"
+// #include "tools/callbacks.h"
+#include "emtools/JSWrap.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
+#include "UI/UI.h"
+#include "UI/keypress.h"
 
 #include "../main/World.h"
 #include "../organisms/OrgControl.h"
 #include "../webtools/Viewport.h"
 
-#include "UI/UI.h"
+// Phasing out...
+#include "kinetic/Kinetic.h"
 
 namespace evoke {
   typedef Viewport<dBody, dControl, dBase> dViewport;
@@ -26,7 +28,7 @@ private:
   evoke::dViewport viewport;
 
   emp::Kinetic::Animation<EvokeInterface> anim_interface;
-  emp::KeypressManager keypress_manager;
+  emp::UI::KeypressManager keypress_manager;
 public:
   EvokeInterface()
     : stage(world.width, world.height, "container")
@@ -133,8 +135,8 @@ public:
     world.physics.AddBody( body->BuildOffspring( repro_angle.GetPoint(0.01) ) );
   }
 
-  bool OnKeydown(const emp::EventInfo & evt_info) {
-    const int key_code = evt_info.key_code;
+  bool OnKeydown(const emp::html5::KeyboardEvent & evt_info) {
+    const int key_code = evt_info.keyCode;
     bool return_value = true;
     
     switch (key_code) {
@@ -163,8 +165,10 @@ EvokeInterface * evoke_interface;
 
 // extern "C" int evokeMain()
 extern "C" int main()
-{
+{  
   EMP_SETUP();
+  emp::UI::Initialize();
+
   evoke_interface = new EvokeInterface();
 
   return 0;
