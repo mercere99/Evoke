@@ -13,7 +13,7 @@ OFLAGS_web := -g4 -Werror -pedantic -Wno-dollar-in-identifier-extension -s TOTAL
 #OFLAGS_web := -Os -Werror -DNDEBUG -s TOTAL_MEMORY=67108864
 
 
-CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/kinetic/library_kinetic.js  -s EXPORTED_FUNCTIONS="['_main', '_empJSDoCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s COMPILER_ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
+CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/kinetic/library_kinetic.js  --js-library ../Empirical/emtools/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empJSDoCallback', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s COMPILER_ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
 default: evoke
 web: evoke.js
 all: evoke evoke.js
