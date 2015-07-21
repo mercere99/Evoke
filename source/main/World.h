@@ -17,11 +17,11 @@
 namespace evoke {
   
   struct World {
-    const evoke::dBase width = 512;
-    const evoke::dBase height = 512;
+    const double width = 512.0;
+    const double height = 512.0;
 
     emp::Config config;
-    emp::Physics2D<evoke::dBody, evoke::dControl, evoke::dBase> physics;
+    emp::Physics2D<evoke::dBody, evoke::dControl> physics;
     emp::Random random;    
 
     World() : physics(width, height) { ; }
