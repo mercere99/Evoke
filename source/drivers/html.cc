@@ -17,7 +17,7 @@
 #include "kinetic/Kinetic.h"
 
 namespace evoke {
-  typedef Viewport<dBody, dControl, dBase> dViewport;
+  typedef Viewport<dBody, dControl> dViewport;
 }
 
 class EvokeInterface {

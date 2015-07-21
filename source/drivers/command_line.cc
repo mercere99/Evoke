@@ -4,7 +4,7 @@
 #include "../defs.h"
 
 #include "config/config.h"
-#include "tools/callbacks.h"
+#include "kinetic/callbacks.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
 #include "tools/functions.h"
@@ -13,11 +13,12 @@
 
 class EvokeInterface {
 private:
-  const evoke::dBase world_x = 512;
-  const evoke::dBase world_y = 512;
+  const double world_x = 512.0;
+  const double world_y = 512.0;
   emp::Config config;
 
-  emp::Physics2D<evoke::dBody, evoke::dControl, evoke::dBase> physics;
+  emp::Physics2D<evoke::dBody, evoke::dControl> physics;
+
 public:
   EvokeInterface()
     : physics(world_x, world_y)

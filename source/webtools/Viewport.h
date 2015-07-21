@@ -15,7 +15,7 @@ namespace evoke {
   //   BODY_INFO is evoke::OrgControl
 
   // Viewport displays a world on the screen and allows some manipulation.
-  template <typename BODY_TYPE, typename BODY_INFO, typename BASE_TYPE> 
+  template <typename BODY_TYPE, typename BODY_INFO, typename BASE_TYPE=double>
   class Viewport : public Kinetic::CustomShape {
   private:
     World & world;
@@ -73,14 +73,14 @@ namespace evoke {
       for (const auto body : active_body_set) {
         // emp_assert(body->GetColorID() >= 0 && body->GetColorID() <= 2);
         // canvas.SetStroke(color_map[body->GetColorID()]);
-        canvas.SetStroke("white");
-        canvas.SetFill( emp::to_string("hsl(", body->GetColorID(), ",50%,20%") );
+//        canvas.SetStroke("white");
+//        canvas.SetFill( emp::to_string("hsl(", body->GetColorID(), ",50%,20%") );
         // canvas.SetFill("hsl(0,50%,10%)");
         canvas.BeginPath();
         canvas.Circle(body->GetPerimeter());
         canvas.Stroke();
-        canvas.Fill();
-        canvas.SetStroke("white");
+//        canvas.Fill();
+//        canvas.SetStroke("white");
       }
 
       // Make the canvas respond to the mouse.
@@ -93,8 +93,8 @@ namespace evoke {
       canvas.SetupTarget(*this);
     }
 
-    bool OnKeydown(const emp::EventInfo & evt_info) {
-      const int key_code = evt_info.key_code;
+    bool OnKeydown(const emp::html5::KeyboardEvent & evt_info) {
+      const int key_code = evt_info.keyCode;
       bool return_value = true;
 
       switch (key_code) {
