@@ -24,11 +24,10 @@ namespace evoke {
   template <typename HARDWARE> class OrgControl;
 
   // Simple typedefs...
-  typedef double dBase;
-  typedef OrgControl<emp::HardwareCPU<>> dControl;
-  typedef emp::CircleBody2D< dControl, dBase > dBody;
-  typedef emp::Point<evoke::dBase> dPoint;
-  typedef emp::Circle<evoke::dBase> dCircle;
+  using dControl = OrgControl<emp::HardwareCPU<>>;
+  using dBody = emp::CircleBody2D< dControl >;
+  using dPoint = emp::Point<>;
+  using dCircle = emp::Circle<>;
   
   // Construction of the specific Phenotype types.
   typedef emp::TraitManager<int, double, bool, std::string,
