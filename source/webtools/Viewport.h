@@ -19,7 +19,7 @@ namespace evoke {
   class Viewport : public Kinetic::CustomShape {
   private:
     World & world;
-    std::vector<emp::Color> color_map;
+    std::vector<std::string> color_map;
 
     BODY_TYPE * user_body;  // Which body, if any, is the player controlling?
 
