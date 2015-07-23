@@ -2,12 +2,13 @@
 
 #include "../defs.h"
 
-// #include "tools/callbacks.h"
 #include "emtools/JSWrap.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
-#include "UI/UI.h"
+
+#include "UI/Animate.h"
 #include "UI/keypress.h"
+#include "UI/UI.h"
 
 #include "../main/World.h"
 #include "../organisms/OrgControl.h"
@@ -16,27 +17,50 @@
 // Phasing out...
 #include "kinetic/Kinetic.h"
 
+namespace UI = emp::UI;
+
 namespace evoke {
-  typedef Viewport<dBody, dControl> dViewport;
+  using dViewport = Viewport<dBody, dControl>;
 }
 
 class EvokeInterface {
 private:
   evoke::World world;
+  UI::Document doc;
+  UI::Animate anim;
+
+  UI::KeypressManager keypress_manager;
+
   emp::Kinetic::Stage stage;
   emp::Kinetic::Layer layer_anim;
   evoke::dViewport viewport;
-
   emp::Kinetic::Animation<EvokeInterface> anim_interface;
-  emp::UI::KeypressManager keypress_manager;
 public:
   EvokeInterface()
-    : stage(world.width, world.height, "container")
+    : doc("emp_base")
+    , anim([this](){ EvokeInterface::Animate2(anim); })
+    , stage(world.width, world.height, "container")
     , viewport(0, 0, world)
   {    
     // Link keypresses to the proper handlers
     keypress_manager.AddKeydownCallback(std::bind(&evoke::dViewport::OnKeydown, &viewport, _1));
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
+
+    // Add a cavas to draw the world.
+    doc << UI::Canvas(world.width, world.height, "pop_view");
+
+    // Add a play/pause button.
+    doc.AddButton([this](){
+        anim.ToggleActive();
+        auto & but = doc.Button("play_but");
+        if (anim.GetActive()) but.Label("Pause");
+        else but.Label("Play");
+        but.Update();
+      }, "Play", "play_but");
+    
+    doc.Update();
+
+
 
     // Link button callbacks to the proper handlers.
     auto play_cb = new emp::MethodCallback<EvokeInterface>(this, &EvokeInterface::DoPlay);
@@ -50,19 +74,11 @@ public:
 
 
     // Initialize organisms in the world.
-    // const int base_radius = 4;
     const int base_radius = 6;
 
     auto org = new evoke::dBody(evoke::dCircle(evoke::dPoint(world.width/2,world.height/2), base_radius), NULL);
     world.physics.AddBody(org);
 
-    // auto org1 = new evoke::dBody(evoke::dCircle(evoke::dPoint(123,456), base_radius), NULL);
-    // world.physics.AddBody(org1);
-    // auto org2 = new evoke::dBody(evoke::dCircle(evoke::dPoint(423,456), base_radius), NULL);
-    // world.physics.AddBody(org2);
-    // auto org3 = new evoke::dBody(evoke::dCircle(evoke::dPoint(300,300), base_radius), NULL);
-    // world.physics.AddBody(org3);
- 
     layer_anim.Add(viewport);
     stage.Add(layer_anim);
 
@@ -71,6 +87,9 @@ public:
   }
 
   ~EvokeInterface() { ; }
+
+  void Animate2(const UI::Animate & anim) {
+  }
 
   void Animate(const emp::Kinetic::AnimationFrame & frame) {
     world.physics.Update();
@@ -87,7 +106,6 @@ public:
     for (auto * body : body_set) {
       // Bodies that are reproducing cannot produce a second offspring until they are done.
       // Bodies under pressure do not produce offspring.
-//      if (body->IsReproducing() || body->GetPressure() > 0.0) continue;
       if (body->IsReproducing() || body->GetPressure() > 1.0) continue;
       if (world.random.P(repro_prob) || body_set.size() == 1) {
         emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
@@ -167,7 +185,7 @@ EvokeInterface * evoke_interface;
 extern "C" int main()
 {  
   EMP_SETUP();
-  emp::UI::Initialize();
+  UI::Initialize();
 
   evoke_interface = new EvokeInterface();
 
