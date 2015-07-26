@@ -32,13 +32,27 @@ public:
     // Link keypresses to the proper handlers
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
 
+    // Add a welcome.
+    doc << "<h1>Welcome to Evoke::Avida!</h1>";
+
     // Add a canvas to draw the world.
-    doc << UI::Canvas(world.width, world.height, "pop_view") << "<br>";
+    doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 60) << "<br>";
 
     // Add buttons.
-    doc.AddButton([this](){DoPlay();}, "Play", "play_but");
-    doc.AddButton([this](){DoStep();}, "Step", "step_but");
+    auto & button_set = doc.AddSlate("buttons");
+    button_set.SetPosition(10, 70+world.height);
+    button_set.AddButton([this](){DoPlay();}, "Play", "play_but");
+    button_set.AddButton([this](){DoStep();}, "Step", "step_but");
+    button_set.AddButton([this](){DoReset();}, "Reset", "reset_but");
     
+    // And stats (next o canvas)
+    auto & stats_set = doc.AddSlate("stats");
+    stats_set.SetPosition(world.width+40, 60);
+    auto & body_set = world.physics.GetBodySet();
+    // stats_set << "Org Count: " << body_set.size();
+    stats_set << "Org Count: " << UI::Live( std::function<std::string()>( [&body_set](){ return emp::to_string(body_set.size()); }) );
+
+
     doc.Update();
 
     // Initialize an organism in the middle of the world.
@@ -84,6 +98,7 @@ public:
     UI::Draw( doc.Canvas("pop_view"),
               world.physics.GetSurface(),
               emp::GetHueMap(360));
+    doc.Slate("stats").Update();
 
   }
 
@@ -106,11 +121,26 @@ public:
   }
 
   void DoStep() {
-    // NOTE: Step is only meaningful if the run is paused.
-    emp_assert(anim.GetActive() == false);
+    emp_assert(anim.GetActive() == false); // Step is only meaningful if the run is paused.
 
     world.physics.Update();
     doc.Canvas("pop_view").Refresh();
+  }
+
+  void DoReset() {
+    // Clear everything currently in the world.
+    world.physics.Clear();
+
+    // Initialize a new organism in the middle of the world.
+    const evoke::dPoint mid_point( world.width / 2.0, world.height / 2.0 );
+    const int org_radius = 6;
+    auto org = new evoke::dBody(evoke::dCircle(mid_point, org_radius), NULL);
+    world.physics.AddBody(org);
+
+    // Redraw the world.
+    UI::Draw( doc.Canvas("pop_view"),
+              world.physics.GetSurface(),
+              emp::GetHueMap(360));
   }
 
 
@@ -119,12 +149,13 @@ public:
     bool return_value = true;
     
     switch (key_code) {
-    case 'p':                                     // P => Play / Pause
-    case 'P':
+    case 'P':                                     // P => Play / Pause
       DoPlay();
       break;
-    case 's':                                     // S => Step
-    case 'S':
+    case 'R':                                     // R => Reset population
+      DoReset();
+      break;
+    case 'S':                                     // S => Step
       DoStep();
       break;
 
