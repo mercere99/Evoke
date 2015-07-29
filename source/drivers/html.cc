@@ -18,16 +18,19 @@ namespace UI = emp::UI;
 
 class EvokeInterface {
 private:
-  evoke::World world;
+  evoke::World world;  // Everything unrelated to the interface should be in the world.
+
   UI::Document doc;
   UI::Animate anim;
-
   UI::KeypressManager keypress_manager;
 
+  enum class MapMode { BLANK, STATIC, BASIC } map_mode;
+  
 public:
   EvokeInterface()
     : doc("emp_base")
     , anim([this](){ EvokeInterface::Animate(anim); })
+    , map_mode(MapMode::BASIC)
   {    
     // Link keypresses to the proper handlers
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
@@ -44,20 +47,23 @@ public:
     button_set.AddButton([this](){DoPlay();}, "Play", "play_but");
     button_set.AddButton([this](){DoStep();}, "Step", "step_but");
     button_set.AddButton([this](){DoReset();}, "Reset", "reset_but");
+    button_set.AddButton([this](){map_mode = MapMode::BLANK;}, "Blank", "blank_but");
+    button_set.AddButton([this](){map_mode = MapMode::BASIC;}, "Basic", "basic_but");
     
     // And stats (next o canvas)
     auto & stats_set = doc.AddSlate("stats");
     stats_set.SetPosition(world.width+40, 60);
     auto & body_set = world.physics.GetBodySet();
-    // stats_set << "Org Count: " << body_set.size();
-    stats_set << "Org Count: " << UI::Live( std::function<std::string()>( [&body_set](){ return emp::to_string(body_set.size()); }) );
+
+    stats_set << "Update: " << UI::Live( [this]() { return anim.GetFrameCount(); } ) << "<br>";
+    stats_set << "Org Count: " << UI::Live( [&body_set](){ return body_set.size(); } );
 
 
     doc.Update();
 
     // Initialize an organism in the middle of the world.
     const evoke::dPoint mid_point( world.width / 2.0, world.height / 2.0 );
-    const int org_radius = 6;
+    const int org_radius = 3;
     auto org = new evoke::dBody(evoke::dCircle(mid_point, org_radius), NULL);
     world.physics.AddBody(org);
 
@@ -95,9 +101,16 @@ public:
       }
     }
 
-    UI::Draw( doc.Canvas("pop_view"),
-              world.physics.GetSurface(),
-              emp::GetHueMap(360));
+    switch (map_mode) {
+    case MapMode::BLANK:
+    case MapMode::STATIC:
+      break;
+    case MapMode::BASIC: 
+      UI::Draw( doc.Canvas("pop_view"),
+                world.physics.GetSurface(),
+                emp::GetHueMap(360));
+      break;
+    }
     doc.Slate("stats").Update();
 
   }
@@ -122,9 +135,7 @@ public:
 
   void DoStep() {
     emp_assert(anim.GetActive() == false); // Step is only meaningful if the run is paused.
-
-    world.physics.Update();
-    doc.Canvas("pop_view").Refresh();
+    anim.Step();
   }
 
   void DoReset() {
@@ -149,6 +160,9 @@ public:
     bool return_value = true;
     
     switch (key_code) {
+    case 'B':                                     // B => Blank
+      map_mode = MapMode::BLANK;
+      break;
     case 'P':                                     // P => Play / Pause
       DoPlay();
       break;
