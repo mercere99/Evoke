@@ -6,15 +6,15 @@
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
 
-#include "UI/Animate.h"
-#include "UI/canvas_utils.h"
-#include "UI/keypress.h"
-#include "UI/UI.h"
+#include "web/Animate.h"
+#include "web/canvas_utils.h"
+#include "web/keypress.h"
+#include "web/web.h"
 
 #include "../main/World.h"
 #include "../organisms/OrgControl.h"
 
-namespace UI = emp::UI;
+namespace UI = emp::web;
 
 class EvokeInterface {
 private:
@@ -42,24 +42,21 @@ public:
     doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 60) << "<br>";
 
     // Add buttons.
-    auto & button_set = doc.AddSlate("buttons");
+    auto button_set = doc.AddSlate("buttons");
     button_set.SetPosition(10, 70+world.height);
-    button_set.AddButton([this](){DoPlay();}, "Play", "play_but");
-    button_set.AddButton([this](){DoStep();}, "Step", "step_but");
-    button_set.AddButton([this](){DoReset();}, "Reset", "reset_but");
-    button_set.AddButton([this](){map_mode = MapMode::BLANK;}, "Blank", "blank_but");
-    button_set.AddButton([this](){map_mode = MapMode::BASIC;}, "Basic", "basic_but");
+    button_set << UI::Button([this](){DoPlay();}, "Play", "play_but");
+    button_set << UI::Button([this](){DoStep();}, "Step", "step_but");
+    button_set << UI::Button([this](){DoReset();}, "Reset", "reset_but");
+    button_set << UI::Button([this](){map_mode = MapMode::BLANK;}, "Blank", "blank_but");
+    button_set << UI::Button([this](){map_mode = MapMode::BASIC;}, "Basic", "basic_but");
     
     // And stats (next o canvas)
-    auto & stats_set = doc.AddSlate("stats");
+    auto stats_set = doc.AddSlate("stats");
     stats_set.SetPosition(world.width+40, 60);
     auto & body_set = world.physics.GetBodySet();
 
     stats_set << "Update: " << UI::Live( [this]() { return anim.GetFrameCount(); } ) << "<br>";
     stats_set << "Org Count: " << UI::Live( [&body_set](){ return body_set.size(); } );
-
-
-    doc.Update();
 
     // Initialize an organism in the middle of the world.
     const evoke::dPoint mid_point( world.width / 2.0, world.height / 2.0 );
@@ -111,14 +108,14 @@ public:
                 emp::GetHueMap(360));
       break;
     }
-    doc.Slate("stats").Update();
 
+    doc.Slate("stats").Redraw();
   }
 
   void DoPlay() {
     anim.ToggleActive();
-    auto & play_but = doc.Button("play_but");
-    auto & step_but = doc.Button("step_but");
+    auto play_but = doc.Button("play_but");
+    auto step_but = doc.Button("step_but");
 
     if (anim.GetActive()) {
       play_but.Label("Pause");    // If animation is running, button should read "Pause"
@@ -128,9 +125,6 @@ public:
       play_but.Label("Play");     // If animation is paused, button should read "Play"
       step_but.Disabled(false);    // Can step paused animation.
     }
-
-    play_but.Update();
-    step_but.Update();
   }
 
   void DoStep() {
