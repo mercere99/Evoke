@@ -14,7 +14,7 @@
 
 #include "config/config.h"
 #include "geometry/Body2D.h"
-#include "hardware/HardwareCPU.h"
+#include "hardware/HardwareCPU_Evo.h"
 #include "tools/Trait.h"
 
 namespace evoke {
@@ -24,7 +24,7 @@ namespace evoke {
   template <typename HARDWARE> class OrgControl;
 
   // Simple typedefs...
-  using dControl = OrgControl<emp::HardwareCPU<>>;
+  using dControl = OrgControl<emp::HardwareCPU_Evo<>>;
   using dBody = emp::CircleBody2D< dControl >;
   using dPoint = emp::Point<>;
   using dCircle = emp::Circle<>;

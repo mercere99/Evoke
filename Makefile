@@ -7,8 +7,8 @@ CFLAGS_nat := -g $(CFLAGS_all)
 
 # Emscripten compiler information
 CXX_web := emcc
-OFLAGS_web := -g4 -pedantic -Wno-dollar-in-identifier-extension -s TOTAL_MEMORY=67108864 # -s DEMANGLE_SUPPORT=1 # -s SAFE_HEAP=1
-#OFLAGS_web := -DNDEBUG -s TOTAL_MEMORY=67108864
+#OFLAGS_web := -g4 -pedantic -Wno-dollar-in-identifier-extension -s TOTAL_MEMORY=67108864 # -s DEMANGLE_SUPPORT=1 # -s SAFE_HEAP=1
+OFLAGS_web := -DNDEBUG -s TOTAL_MEMORY=67108864
 #OFLAGS_web := -Oz -DNDEBUG -s TOTAL_MEMORY=67108864 -s ASSERTIONS=1
 #OFLAGS_web := -Os -DNDEBUG -s TOTAL_MEMORY=67108864
 
@@ -20,6 +20,7 @@ all: evoke evoke.js
 
 evoke:	source/drivers/command_line.cc
 	$(CXX_nat) $(CFLAGS_nat) source/drivers/command_line.cc -o evoke
+	@echo To build the web version use: make web
 
 evoke.js: source/drivers/html.cc
 	$(CXX_web) $(CFLAGS_web) source/drivers/html.cc -o evoke.js
