@@ -152,6 +152,7 @@ public:
   bool OnKeydown(const emp::html5::KeyboardEvent & evt_info) {
     const int key_code = evt_info.keyCode;
     bool return_value = true;
+    auto * user_body = world.physics.GetBodySet()[0];
     
     switch (key_code) {
     case 'B':                                     // B => Blank
@@ -176,18 +177,19 @@ public:
     //     if (body_size > 1) user_body->SetTargetRadius(body_size - 1);
     //   }
     //   break;
-    // case 37:                                      // LEFT ARROW (Turn Left)
-    //   if (user_body) user_body->TurnLeft();
-    //   break;
-    // case 38:                                      // UP ARROW (Accellerate)
-    //   if (user_body) user_body->IncSpeed();
-    //   break;
-    // case 39:                                      // RIGHT ARROW (Turn Right)
-    //   if (user_body) user_body->TurnRight();
-    //   break;
-    // case 40:                                      // DOWN ARROW (Breaks)
-    //   if (user_body) user_body->DecSpeed();
-    //   break;
+
+    case 37:                                      // LEFT ARROW (Turn Left)
+      if (user_body) user_body->TurnLeft();
+      break;
+    case 38:                                      // UP ARROW (Accellerate)
+      if (user_body) user_body->IncSpeed();
+      break;
+    case 39:                                      // RIGHT ARROW (Turn Right)
+      if (user_body) user_body->TurnRight();
+      break;
+    case 40:                                      // DOWN ARROW (Breaks)
+      if (user_body) user_body->DecSpeed();
+      break;
 
     default:
       return_value = false;
