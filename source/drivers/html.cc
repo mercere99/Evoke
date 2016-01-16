@@ -82,9 +82,18 @@ public:
 
     auto & body_set = world.physics.GetBodySet();
 
+    // Loop through all bodies to see which ones should replicate.
     for (auto * body : body_set) {
-      // Bodies that are already reproducing or under pressure cannot produce offspring.
-      if (body->IsReproducing() || body->GetPressure() > 1.0) continue;
+      // Add a small amount of Brownian motion...
+      body->IncSpeed( emp::Angle(world.random.GetDouble() * 2.0 * emp::PI).GetPoint(0.15) );
+      
+      // Bodies cannot repriduce IF:
+      // * They are already reproducing
+      // * They are under too much pressure
+      // * They are attached to too many bodies.
+      if (body->IsReproducing()
+          || body->GetPressure() > 1.0
+          || body->GetLinkCount() >= 3) continue;
 
       if (world.random.P(repro_prob) || body_set.size() == 1) {
         emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
