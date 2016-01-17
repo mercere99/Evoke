@@ -58,12 +58,7 @@ public:
     stats_set << "Update: " << UI::Live( [this]() { return anim.GetFrameCount(); } ) << "<br>";
     stats_set << "Org Count: " << UI::Live( [&body_set](){ return body_set.size(); } );
 
-    // Initialize an organism in the middle of the world.
-    const evoke::dPoint mid_point( world.width / 2.0, world.height / 2.0 );
-    const int org_radius = 3;
-    auto org = new evoke::dBody(evoke::dCircle(mid_point, org_radius), NULL);
-    world.physics.AddBody(org);
-
+    world.Init(); // Sartup the world.    
 
     // Draw initial state of the world.
     UI::Draw( doc.Canvas("pop_view"),
@@ -74,38 +69,7 @@ public:
   ~EvokeInterface() { ; }
 
   void Animate(const UI::Animate & anim) {
-    // Take a single timestep on the world physics.
-    world.physics.Update();
-
-    // Test which organisms should replicate.
-    double repro_prob = 0.003;
-
-    auto & body_set = world.physics.GetBodySet();
-
-    // Loop through all bodies to see which ones should replicate.
-    for (auto * body : body_set) {
-      // Add a small amount of Brownian motion...
-      body->IncSpeed( emp::Angle(world.random.GetDouble() * 2.0 * emp::PI).GetPoint(0.15) );
-      
-      // Bodies cannot repriduce IF:
-      // * They are already reproducing
-      // * They are under too much pressure
-      // * They are attached to too many bodies.
-      if (body->IsReproducing()
-          || body->GetPressure() > 1.0
-          || body->GetLinkCount() >= 3) continue;
-
-      if (world.random.P(repro_prob) || body_set.size() == 1) {
-        emp::Angle repro_angle(world.random.GetDouble(2.0 * emp::PI));
-        auto * new_body = body->BuildOffspring( repro_angle.GetPoint(0.1) );
-
-        // For the moment, assume 95% chance of faithful copy.
-        if (world.random.P(0.95)) new_body->SetColorID(body->GetColorID());
-        else new_body->SetColorID( world.random.GetInt(360) );
-
-        world.physics.AddBody( new_body );
-      }
-    }
+    world.Update();
 
     switch (map_mode) {
     case MapMode::BLANK:
