@@ -50,7 +50,8 @@ namespace evoke {
 
       // Test which organisms should replicate.
       auto & body_set = physics.GetBodySet();
-
+      emp::vector<evoke::dBody *> new_bodies;
+      
       // Loop through all bodies to see which ones should replicate.
       for (auto * body : body_set) {
         // Add a small amount of Brownian motion...
@@ -72,8 +73,13 @@ namespace evoke {
           if (random.P(0.95)) new_body->SetColorID(body->GetColorID());
           else new_body->SetColorID( random.GetInt(360) );
           
-          physics.AddBody( new_body );
+          new_bodies.push_back(new_body); // Mark this body to be added.
         }
+      }
+
+      // Now add all of the new bodies into the world.
+      for (auto new_body : new_bodies) {
+        physics.AddBody( new_body );
       }
 
     }
