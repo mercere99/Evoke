@@ -9,43 +9,18 @@
 #include "geometry/Physics2D.h"
 #include "tools/functions.h"
 
+#include "../main/World.h"
 #include "../organisms/OrgControl.h"
 
 class EvokeInterface {
 private:
-  const double world_x = 512.0;
-  const double world_y = 512.0;
-  emp::Config config;
-
-  emp::Physics2D<evoke::dBody, evoke::dControl> physics;
+  evoke::World world;  // Everything unrelated to the interface should be in the world.
 
 public:
-  EvokeInterface()
-    : physics(world_x, world_y)
-  {    
-    auto org1 = new evoke::dBody(evoke::dCircle(evoke::dPoint(123,456), 8), NULL);
-    physics.AddBody(org1);
-    auto org2 = new evoke::dBody(evoke::dCircle(evoke::dPoint(423,456), 8), NULL);
-    physics.AddBody(org2);
-    auto org3 = new evoke::dBody(evoke::dCircle(evoke::dPoint(300,300), 8), NULL);
-    physics.AddBody(org3);
-    org1->SetVelocity(5,3);
-
-    const int base_radius = 3;
-    for (int i = base_radius+1; i < world_x-base_radius-1; i += 2*base_radius) {
-      for (int j = 50; j < 200; j += 2*base_radius + 1) {
-        auto org = new evoke::dBody(evoke::dCircle(evoke::dPoint(i,j), base_radius), NULL);
-        org->SetVelocity(0,1);
-        physics.AddBody(org);
-      }
-    }
-  }
-
+  EvokeInterface() { world.Init(); }
   ~EvokeInterface() { ; }
 
-  void Step() {
-    physics.Update();
-  }
+  void Step() { world.Update(); }
 };
 
 int main() {
@@ -58,10 +33,12 @@ int main() {
   // config.WriteMacros("test_config.h");
 
   EvokeInterface evoke;
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 10000; i++) {
     std::cout << "Update: " << i << std::endl;
     evoke.Step();
   }
+
+  return 0;
 }
 
 
