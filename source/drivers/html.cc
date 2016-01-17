@@ -106,15 +106,8 @@ public:
   }
 
   void DoReset() {
-    // Clear everything currently in the world.
-    world.physics.Clear();
-
-    // Initialize a new organism in the middle of the world.
-    const evoke::dPoint mid_point( world.width / 2.0, world.height / 2.0 );
-    const int org_radius = 6;
-    auto org = new evoke::dBody(evoke::dCircle(mid_point, org_radius), NULL);
-    world.physics.AddBody(org);
-
+    world.Reset();
+    
     // Redraw the world.
     UI::Draw( doc.Canvas("pop_view"),
               world.physics.GetSurface(),

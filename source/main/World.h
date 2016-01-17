@@ -36,6 +36,14 @@ namespace evoke {
       physics.AddBody(org);
     }
 
+    void Reset() {
+      // Clear everything currently in the world.
+      physics.Clear();
+
+      // Re-initialize a new organism in the middle of the world.
+      Init();
+    }
+
     void Update() {
       // Take a single timestep on the world physics.
       physics.Update();
