@@ -19,9 +19,9 @@ namespace evoke {
   struct World {
     const double width = 512.0;       // Size of the world.
     const double height = 512.0;
-    const double repro_prob = 0.003;  // Chance of legal org to replicate each update.
     const double drift = 0.15;        // Amount of Brownian motion.
-    const double org_radius = 3.0;
+    const double repro_prob = 0.003;  // Chance of legal org to replicate each update.
+    double org_radius = 4.0;
     
     emp::Config config;
     emp::Physics2D<evoke::dBody, evoke::dControl> physics;
@@ -65,7 +65,7 @@ namespace evoke {
             || body->GetPressure() > 1.0
             || body->GetLinkCount() >= 3) continue;
 
-        if (random.P(repro_prob) || body_set.size() == 1) {
+        if (random.P(repro_prob) || (body_set.size() < 4 && random.P(repro_prob*3.0))) {
           emp::Angle repro_angle(random.GetDouble(2.0 * emp::PI));
           auto * new_body = body->BuildOffspring( repro_angle.GetPoint(0.1) );
 
