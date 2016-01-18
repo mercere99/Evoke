@@ -36,19 +36,32 @@ public:
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
 
     // Add a welcome.
-    doc << "<h1>Welcome to Evoke::Avida!</h1>";
+    doc << "<h1>Welcome to Evoke!</h1>";
 
     // Add a canvas to draw the world.
     doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 60) << "<br>";
 
     // Add buttons.
-    auto button_set = doc.AddSlate("buttons");
-    button_set.SetPosition(10, 70+world.height);
-    button_set << UI::Button([this](){DoPlay();}, "Play", "play_but");
-    button_set << UI::Button([this](){DoStep();}, "Step", "step_but");
-    button_set << UI::Button([this](){DoReset();}, "Reset", "reset_but");
-    button_set << UI::Button([this](){map_mode = MapMode::BLANK;}, "Blank", "blank_but");
-    button_set << UI::Button([this](){map_mode = MapMode::BASIC;}, "Basic", "basic_but");
+    auto control_set = doc.AddSlate("buttons");
+    control_set.SetPosition(10, 70+world.height);
+    control_set << UI::Button([this](){DoPlay();}, "Play", "play_but");
+    control_set << UI::Button([this](){DoStep();}, "Step", "step_but");
+    control_set << UI::Button([this](){DoReset();}, "Reset", "reset_but");
+
+    UI::Selector mode_sel("mode_sel");
+    mode_sel.SetOption("Basic Map",            [this](){map_mode = MapMode::BASIC;} );
+    mode_sel.SetOption("Frozen Map (faster!)", [this](){map_mode = MapMode::BLANK;} );
+    control_set << mode_sel;
+
+    UI::Selector size_sel("size_sel");
+    size_sel.SetOption("Cell Size = 3", [this](){world.org_radius=3.0;} );
+    size_sel.SetOption("Cell Size = 4", [this](){world.org_radius=4.0;} );
+    size_sel.SetOption("Cell Size = 5", [this](){world.org_radius=5.0;} );
+    size_sel.SetOption("Cell Size = 6", [this](){world.org_radius=6.0;} );
+    size_sel.SetOption("Cell Size = 8", [this](){world.org_radius=8.0;} );
+    size_sel.SetOption("Cell Size = 10", [this](){world.org_radius=10.0;} );
+    size_sel.SelectID(1);
+    control_set << size_sel;
     
     // And stats (next o canvas)
     auto stats_set = doc.AddSlate("stats");
