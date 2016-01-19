@@ -21,13 +21,15 @@ namespace evoke {
     const double height = 512.0;
     const double drift = 0.15;        // Amount of Brownian motion.
     const double repro_prob = 0.003;  // Chance of legal org to replicate each update.
-    double org_radius = 4.0;
+    const double pop_pressure = 1.0;  // How much pressure before an organism dies?
+    double org_radius;                // How big should each cell get?
+    int max_link_count;               // How many links can an org have?
     
     emp::Config config;
     emp::Physics2D<evoke::dBody, evoke::dControl> physics;
     emp::Random random;    
 
-    World() : physics(width, height) { ; }
+    World() : org_radius(4.0), max_link_count(3), physics(width, height) { ; }
 
     void Init() {
       // Initialize an organism in the middle of the world.
@@ -62,8 +64,8 @@ namespace evoke {
         // * They are under too much pressure
         // * They are attached to too many bodies.
         if (body->IsReproducing()
-            || body->GetPressure() > 1.0
-            || body->GetLinkCount() >= 3) continue;
+            || body->GetPressure() > pop_pressure
+            || body->GetLinkCount() >= max_link_count) continue;
 
         if (random.P(repro_prob) || (body_set.size() < 4 && random.P(repro_prob*3.0))) {
           emp::Angle repro_angle(random.GetDouble(2.0 * emp::PI));
