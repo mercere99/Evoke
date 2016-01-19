@@ -48,21 +48,30 @@ public:
     control_set << UI::Button([this](){DoStep();}, "Step", "step_but");
     control_set << UI::Button([this](){DoReset();}, "Reset", "reset_but");
 
-    UI::Selector mode_sel("mode_sel");
-    mode_sel.SetOption("Basic Map",            [this](){map_mode = MapMode::BASIC;} );
-    mode_sel.SetOption("Frozen Map (faster!)", [this](){map_mode = MapMode::BLANK;} );
-    control_set << mode_sel;
+    UI::Selector map_sel("map_sel");
+    map_sel.SetOption("Basic Map",            [this](){map_mode = MapMode::BASIC;} );
+    map_sel.SetOption("Frozen Map (faster!)", [this](){map_mode = MapMode::BLANK;} );
+    control_set << map_sel;
 
     UI::Selector size_sel("size_sel");
-    size_sel.SetOption("Cell Size = 3", [this](){world.org_radius=3.0;} );
-    size_sel.SetOption("Cell Size = 4", [this](){world.org_radius=4.0;} );
-    size_sel.SetOption("Cell Size = 5", [this](){world.org_radius=5.0;} );
-    size_sel.SetOption("Cell Size = 6", [this](){world.org_radius=6.0;} );
-    size_sel.SetOption("Cell Size = 8", [this](){world.org_radius=8.0;} );
+    size_sel.SetOption("Cell Size = 3",  [this](){world.org_radius=3.0;} );
+    size_sel.SetOption("Cell Size = 4",  [this](){world.org_radius=4.0;} );
+    size_sel.SetOption("Cell Size = 5",  [this](){world.org_radius=5.0;} );
+    size_sel.SetOption("Cell Size = 6",  [this](){world.org_radius=6.0;} );
+    size_sel.SetOption("Cell Size = 8",  [this](){world.org_radius=8.0;} );
     size_sel.SetOption("Cell Size = 10", [this](){world.org_radius=10.0;} );
     size_sel.SelectID(1);
     control_set << size_sel;
-    
+
+    UI::Selector mode_sel("mode_sel");
+    mode_sel.SetOption("Individual Orgs",
+                       [this](){world.physics.SetDetach(true); world.max_link_count=10; } );
+    mode_sel.SetOption("Snowflake Clusters",
+                       [this](){world.physics.SetDetach(false); world.max_link_count=3; } );
+    mode_sel.SetOption("Aggregative Clusters",
+                       [this](){world.physics.SetDetach(false); world.max_link_count=10; } );
+    control_set << mode_sel;
+
     // And stats (next o canvas)
     auto stats_set = doc.AddSlate("stats");
     stats_set.SetPosition(world.width+40, 60);
