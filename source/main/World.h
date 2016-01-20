@@ -1,7 +1,7 @@
-#ifndef EVOKE_WORLD_H
-#define EVOKE_WORLD_H
-
-////////////////////////////////////////////////////////////////////////////////////////////
+//  This file is part of Evoke, https://github.com/mercere99/Evoke/
+//  Copyright (C) Michigan State University, 2016.
+//  Released under the MIT Software license; see doc/LICENSE
+//
 //
 //  The World struct maintains all needed information to describe a single world instance.
 //
@@ -9,6 +9,10 @@
 //  world information is needed.  Most runs will probably only have a single world, but
 //  multiple worlds should be possible.
 //
+
+
+#ifndef EVOKE_WORLD_H
+#define EVOKE_WORLD_H
 
 
 #include "config/config.h"
@@ -26,7 +30,7 @@ namespace evoke {
     int max_link_count;               // How many links can an org have?
     
     emp::Config config;
-    emp::Physics2D<evoke::dBody, evoke::dControl> physics;
+    emp::Physics2D<evoke::dBody> physics;
     emp::Random random;    
 
     World() : org_radius(4.0), max_link_count(3), physics(width, height) { ; }
@@ -34,7 +38,7 @@ namespace evoke {
     void Init() {
       // Initialize an organism in the middle of the world.
       const emp::Point<double>  mid_point( width / 2.0, height / 2.0 );
-      auto org = new evoke::dBody(evoke::dCircle(mid_point, org_radius), NULL);
+      auto org = new evoke::dBody(evoke::dCircle(mid_point, org_radius));
       physics.AddBody(org);
     }
 

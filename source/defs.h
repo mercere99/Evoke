@@ -1,11 +1,13 @@
-#ifndef EVOKE_DEFS_H
-#define EVOKE_DEFS_H
-
-//////////////////////////////////////////////////////////////////////////////////////////
+//  This file is part of Evoke, https://github.com/mercere99/Evoke/
+//  Copyright (C) Michigan State University, 2016.
+//  Released under the MIT Software license; see doc/LICENSE
+//
 //
 //  This file contains definitions that will be useful throughout the Evoke project
 //
 
+#ifndef EVOKE_DEFS_H
+#define EVOKE_DEFS_H
 
 // If we haven't specified a config file in out compiler options, set the default here.
 #ifndef EMP_CONFIG_FILE
@@ -25,7 +27,7 @@ namespace evoke {
 
   // Simple typedefs...
   using dControl = OrgControl<emp::HardwareCPU_Evo<>>;
-  using dBody = emp::CircleBody2D< dControl >;
+  using dBody = emp::CircleBody2D;
   using dPoint = emp::Point<>;
   using dCircle = emp::Circle<>;
   
