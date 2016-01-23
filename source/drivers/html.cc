@@ -24,7 +24,7 @@ private:
   UI::Animate anim;
   UI::KeypressManager keypress_manager;
 
-  enum class MapMode { BLANK, STATIC, BASIC } map_mode;
+  enum class MapMode { BLANK, MAKE_BLANK, BASIC } map_mode;
   
 public:
   EvokeInterface()
@@ -50,7 +50,7 @@ public:
 
     UI::Selector map_sel("map_sel");
     map_sel.SetOption("Basic Map",            [this](){map_mode = MapMode::BASIC;} );
-    map_sel.SetOption("Frozen Map (faster!)", [this](){map_mode = MapMode::BLANK;} );
+    map_sel.SetOption("Blank Map (fast!)", [this](){map_mode = MapMode::MAKE_BLANK;} );
     control_set << map_sel;
 
     UI::Selector mode_sel("mode_sel");
@@ -58,8 +58,8 @@ public:
                        [this](){world.physics.SetDetach(true); world.max_link_count=10; } );
     mode_sel.SetOption("Snowflake Clusters",
                        [this](){world.physics.SetDetach(false); world.max_link_count=3; } );
-    mode_sel.SetOption("Aggregative Clusters",
-                       [this](){world.physics.SetDetach(false); world.max_link_count=10; } );
+    // mode_sel.SetOption("Aggregative Clusters",
+    //                    [this](){world.physics.SetDetach(false); world.max_link_count=10; } );
     control_set << mode_sel;
 
     control_set << "<br>";
@@ -112,6 +112,7 @@ public:
               << "<b>Keyboard Shortcuts</b>:<br>"
               << "&nbsp;&nbsp;<b>[SPACE]</b>: Start/Stop.<br>"
               << "&nbsp;&nbsp;<b>[ARROWS]</b>: Move a cell around.<br>"
+              << "&nbsp;&nbsp;<b>[M]</b>: Toggle Map Mode (Basic vs. Blank).<br>"
               << "&nbsp;&nbsp;<b>[R]</b>: Reset Run.<br>"
               << "&nbsp;&nbsp;<b>[S]</b>: Step a single update.<br>"
       ;
@@ -131,8 +132,10 @@ public:
     world.Update();
 
     switch (map_mode) {
+    case MapMode::MAKE_BLANK:
+      doc.Canvas("pop_view").Clear();
+      map_mode = MapMode::BLANK;
     case MapMode::BLANK:
-    case MapMode::STATIC:
       break;
     case MapMode::BASIC: 
       UI::Draw( doc.Canvas("pop_view"),
@@ -186,8 +189,16 @@ public:
     case ' ':                                     // [SPACE] => Start / Stop a run
       DoStart();
       break;
-    case 'B':                                     // B => Blank
-      map_mode = MapMode::BLANK;
+    case 'M':                                     // M => Map Mode
+      switch (map_mode) {
+      case MapMode::BLANK:
+      case MapMode::MAKE_BLANK:
+        map_mode = MapMode::BASIC;
+        break;
+      case MapMode::BASIC:
+        map_mode = MapMode::MAKE_BLANK;
+        break;
+      }
       break;
     case 'R':                                     // R => Reset population
       DoReset();
