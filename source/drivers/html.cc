@@ -44,7 +44,7 @@ public:
     // Add buttons.
     auto control_set = doc.AddSlate("buttons");
     control_set.SetPosition(10, 70+world.height);
-    control_set << UI::Button([this](){DoPlay();}, "Play", "play_but");
+    control_set << UI::Button([this](){DoStart();}, "Start", "start_but");
     control_set << UI::Button([this](){DoStep();}, "Step", "step_but");
     control_set << UI::Button([this](){DoReset();}, "Reset", "reset_but");
 
@@ -97,13 +97,24 @@ public:
     stats_set << "Org Count: " << UI::Live( [&body_set](){ return body_set.size(); } );
 
     stats_set << "<br><br>"
-              << "Press <b>Play</b> to start a run.<br>"
+              << "Each circle represents a <b>single cell</b>.<br>"
+              << "Cells are <b>attached</b> during gestation; in some setups, they may stay attached after birth.<br>"
+              << "<b>Colors</b> are (mostly) meaningless, but have a 5% chance of changing at birth.<br>"
+              << "<br>"
+              << "Press <b>Start/Stop</b> to begin or pause a run; <b>Step</b> advances a paused run by a single update.<br>"
+              << "Use <b>Reset</b> to restart a run from the beginning (using current settings).<br>"
               << "Freeze the <b>Map</b> to speed up processing.<br>"
               << "Cells can be <b>Individuals</b> or linked into clusters like <b>Snowflake</b> Yeast.<br>"
               << "<b>Cell Sizes</b> can be changed, but you need to <b>Reset</b> the run to see the results.<br>"
               << "<b>Flow</b> indicates the ammount of Brownian motion in the run.<br>"
-              << "<b>Copy</b> rate determines how quickly cells should be reproducing.<br>";
-      
+              << "<b>Copy</b> rate determines how quickly cells should be reproducing.<br>"
+              << "<br>"
+              << "<b>Keyboard Shortcuts</b>:<br>"
+              << "&nbsp;&nbsp;<b>[SPACE]</b>: Start/Stop.<br>"
+              << "&nbsp;&nbsp;<b>[ARROWS]</b>: Move a cell around.<br>"
+              << "&nbsp;&nbsp;<b>[R]</b>: Reset Run.<br>"
+              << "&nbsp;&nbsp;<b>[S]</b>: Step a single update.<br>"
+      ;
 
 
     world.Init(); // Sartup the world.    
@@ -133,23 +144,23 @@ public:
     doc.Slate("stats").Redraw();
   }
 
-  void DoPlay() {
+  void DoStart() {
     anim.ToggleActive();
-    auto play_but = doc.Button("play_but");
+    auto start_but = doc.Button("start_but");
     auto step_but = doc.Button("step_but");
 
     if (anim.GetActive()) {
-      play_but.Label("Pause");    // If animation is running, button should read "Pause"
+      start_but.Label("Stop");    // If animation is running, button should read "Stop"
       step_but.Disabled(true);    // Cannot step animation already running.
     }
     else {
-      play_but.Label("Play");     // If animation is paused, button should read "Play"
-      step_but.Disabled(false);    // Can step paused animation.
+      start_but.Label("Start");     // If animation is stopped, button should read "Start"
+      step_but.Disabled(false);    // Can step stopped animation.
     }
   }
 
   void DoStep() {
-    emp_assert(anim.GetActive() == false); // Step is only meaningful if the run is paused.
+    emp_assert(anim.GetActive() == false); // Step is only meaningful if the run is stopped.
     anim.Step();
   }
 
@@ -164,16 +175,19 @@ public:
 
 
   bool OnKeydown(const emp::html5::KeyboardEvent & evt_info) {
+    // Reject most modified keypresses.
+    if (evt_info.altKey || evt_info.ctrlKey || evt_info.metaKey) return false;
+
     const int key_code = evt_info.keyCode;
     bool return_value = true;
     auto * user_body = world.physics.GetBodySet()[0];
     
     switch (key_code) {
+    case ' ':                                     // [SPACE] => Start / Stop a run
+      DoStart();
+      break;
     case 'B':                                     // B => Blank
       map_mode = MapMode::BLANK;
-      break;
-    case 'P':                                     // P => Play / Pause
-      DoPlay();
       break;
     case 'R':                                     // R => Reset population
       DoReset();
