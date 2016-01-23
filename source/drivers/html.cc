@@ -53,16 +53,6 @@ public:
     map_sel.SetOption("Frozen Map (faster!)", [this](){map_mode = MapMode::BLANK;} );
     control_set << map_sel;
 
-    UI::Selector size_sel("size_sel");
-    size_sel.SetOption("Cell Size = 3",  [this](){world.org_radius=3.0;} );
-    size_sel.SetOption("Cell Size = 4",  [this](){world.org_radius=4.0;} );
-    size_sel.SetOption("Cell Size = 5",  [this](){world.org_radius=5.0;} );
-    size_sel.SetOption("Cell Size = 6",  [this](){world.org_radius=6.0;} );
-    size_sel.SetOption("Cell Size = 8",  [this](){world.org_radius=8.0;} );
-    size_sel.SetOption("Cell Size = 10", [this](){world.org_radius=10.0;} );
-    size_sel.SelectID(1);
-    control_set << size_sel;
-
     UI::Selector mode_sel("mode_sel");
     mode_sel.SetOption("Individual Orgs",
                        [this](){world.physics.SetDetach(true); world.max_link_count=10; } );
@@ -72,6 +62,32 @@ public:
                        [this](){world.physics.SetDetach(false); world.max_link_count=10; } );
     control_set << mode_sel;
 
+    control_set << "<br>";
+    
+    UI::Selector size_sel("size_sel");
+    size_sel.SetOption("Cell Size 3",  [this](){world.org_radius=3.0;} );
+    size_sel.SetOption("Cell Size 4",  [this](){world.org_radius=4.0;} );
+    size_sel.SetOption("Cell Size 5",  [this](){world.org_radius=5.0;} );
+    size_sel.SetOption("Cell Size 6",  [this](){world.org_radius=6.0;} );
+    size_sel.SetOption("Cell Size 8",  [this](){world.org_radius=8.0;} );
+    size_sel.SetOption("Cell Size 10", [this](){world.org_radius=10.0;} );
+    size_sel.SelectID(1);
+    control_set << size_sel;
+
+    UI::Selector drift_sel("drift_sel");
+    drift_sel.SetOption("Flow Off",  [this](){world.drift=0.0;} );
+    drift_sel.SetOption("Flow Low",  [this](){world.drift=0.05;} );
+    drift_sel.SetOption("Flow High", [this](){world.drift=0.15;} );
+    drift_sel.SelectID(2);
+    control_set << drift_sel;
+
+    UI::Selector repro_sel("repro_sel");
+    repro_sel.SetOption("Copy Off",  [this](){world.repro_prob=0.0;} );
+    repro_sel.SetOption("Copy Slow", [this](){world.repro_prob=0.003;} );
+    repro_sel.SetOption("Copy Fast", [this](){world.repro_prob=0.01;} );
+    repro_sel.SelectID(1);
+    control_set << repro_sel;
+
     // And stats (next o canvas)
     auto stats_set = doc.AddSlate("stats");
     stats_set.SetPosition(world.width+40, 60);
@@ -79,6 +95,16 @@ public:
 
     stats_set << "Update: " << UI::Live( [this]() { return anim.GetFrameCount(); } ) << "<br>";
     stats_set << "Org Count: " << UI::Live( [&body_set](){ return body_set.size(); } );
+
+    stats_set << "<br><br>"
+              << "Press <b>Play</b> to start a run.<br>"
+              << "Freeze the <b>Map</b> to speed up processing.<br>"
+              << "Cells can be <b>Individuals</b> or linked into clusters like <b>Snowflake</b> Yeast.<br>"
+              << "<b>Cell Sizes</b> can be changed, but you need to <b>Reset</b> the run to see the results.<br>"
+              << "<b>Flow</b> indicates the ammount of Brownian motion in the run.<br>"
+              << "<b>Copy</b> rate determines how quickly cells should be reproducing.<br>";
+      
+
 
     world.Init(); // Sartup the world.    
 
