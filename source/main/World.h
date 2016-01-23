@@ -23,9 +23,9 @@ namespace evoke {
   struct World {
     const double width = 512.0;       // Size of the world.
     const double height = 512.0;
-    const double drift = 0.15;        // Amount of Brownian motion.
-    const double repro_prob = 0.003;  // Chance of legal org to replicate each update.
-    const double pop_pressure = 1.0;  // How much pressure before an organism dies?
+    const double pop_pressure = 1.0;  // How much pressure before an organism dies? 
+    double repro_prob;                // Chance of legal org to replicate each update.
+    double drift;                     // Amount of Brownian motion.
     double org_radius;                // How big should each cell get?
     int max_link_count;               // How many links can an org have?
     
@@ -33,7 +33,7 @@ namespace evoke {
     emp::Physics2D<evoke::dBody> physics;
     emp::Random random;    
 
-    World() : org_radius(4.0), max_link_count(3), physics(width, height) { ; }
+    World() : repro_prob(0.003), drift(0.15), org_radius(4.0), max_link_count(3), physics(width, height) { ; }
 
     void Init() {
       // Initialize an organism in the middle of the world.
