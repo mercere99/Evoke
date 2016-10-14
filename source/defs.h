@@ -17,7 +17,7 @@
 #include "config/config.h"
 #include "geometry/Body2D.h"
 #include "hardware/HardwareCPU_Evo.h"
-#include "tools/Trait.h"
+#include "in_progress/Trait.h"
 
 namespace evoke {
 

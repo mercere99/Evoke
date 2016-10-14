@@ -2,7 +2,7 @@
 
 #include "../defs.h"
 
-#include "emtools/JSWrap.h"
+#include "web/JSWrap.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
 
@@ -101,9 +101,9 @@ public:
               << "Cells are <b>attached</b> during gestation; in some setups, they may stay attached after birth.<br>"
               << "<b>Colors</b> are (mostly) meaningless, but have a 5% chance of changing at birth.<br>"
               << "<br>"
-              << "Press <b>Start/Stop</b> to begin or pause a run; <b>Step</b> advances a paused run by a single update.<br>"
+              << "Press <b>Start/Stop</b> to begin or pause a run; <b>Step</b> advances a run by a single update.<br>"
               << "Use <b>Reset</b> to restart a run from the beginning (using current settings).<br>"
-              << "Freeze the <b>Map</b> to speed up processing.<br>"
+              << "Freeze the <b>Map</b> to speed up processing by more than 10-fold.<br>"
               << "Cells can be <b>Individuals</b> or linked into clusters like <b>Snowflake</b> Yeast.<br>"
               << "<b>Cell Sizes</b> can be changed, but you need to <b>Reset</b> the run to see the results.<br>"
               << "<b>Flow</b> indicates the ammount of Brownian motion in the run.<br>"
