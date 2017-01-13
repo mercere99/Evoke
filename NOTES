@@ -1,4 +1,6 @@
 -=-= Next Steps =-=-
+RESYNC with current version of Empirical!
+
 Use new Signals and Actions system to hook into bodies and specify run behavior
 Setup timing to use Emscripten run instead of animation.
 Setup proper body info types (BRAINS: Just color, CPUs, Markov Brains, etc.)
