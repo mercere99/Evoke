@@ -37,7 +37,7 @@ namespace evoke {
 
     void Init() {
       // Initialize an organism in the middle of the world.
-      const emp::Point<double>  mid_point( width / 2.0, height / 2.0 );
+      const emp::Point mid_point( width / 2.0, height / 2.0 );
       auto org = new evoke::dBody(evoke::dCircle(mid_point, org_radius));
       physics.AddBody(org);
     }

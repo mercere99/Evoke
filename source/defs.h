@@ -16,7 +16,7 @@
 
 #include "config/config.h"
 #include "geometry/Body2D.h"
-#include "hardware/HardwareCPU_Evo.h"
+#include "hardware/AvidaGP.h"
 #include "in_progress/Trait.h"
 
 namespace evoke {
@@ -26,10 +26,10 @@ namespace evoke {
   template <typename HARDWARE> class OrgControl;
 
   // Simple typedefs...
-  using dControl = OrgControl<emp::HardwareCPU_Evo<>>;
+  using dControl = OrgControl<emp::AvidaGP>;
   using dBody = emp::CircleBody2D;
-  using dPoint = emp::Point<>;
-  using dCircle = emp::Circle<>;
+  using dPoint = emp::Point;
+  using dCircle = emp::Circle;
   
   // Construction of the specific Phenotype types.
   typedef emp::TraitManager<int, double, bool, std::string,

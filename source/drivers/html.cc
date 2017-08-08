@@ -8,7 +8,7 @@
 
 #include "web/Animate.h"
 #include "web/canvas_utils.h"
-#include "web/keypress.h"
+#include "web/KeypressManager.h"
 #include "web/web.h"
 
 #include "../main/World.h"
@@ -42,7 +42,7 @@ public:
     doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 60) << "<br>";
 
     // Add buttons.
-    auto control_set = doc.AddSlate("buttons");
+    auto control_set = doc.AddDiv("buttons");
     control_set.SetPosition(10, 70+world.height);
     control_set << UI::Button([this](){DoStart();}, "Start", "start_but");
     control_set << UI::Button([this](){DoStep();}, "Step", "step_but");
@@ -89,7 +89,7 @@ public:
     control_set << repro_sel;
 
     // And stats (next o canvas)
-    auto stats_set = doc.AddSlate("stats");
+    auto stats_set = doc.AddDiv("stats");
     stats_set.SetPosition(world.width+40, 60);
     auto & body_set = world.physics.GetBodySet();
 
@@ -144,7 +144,7 @@ public:
       break;
     }
 
-    doc.Slate("stats").Redraw();
+    doc.Div("stats").Redraw();
   }
 
   void DoStart() {
@@ -177,7 +177,7 @@ public:
   }
 
 
-  bool OnKeydown(const emp::html5::KeyboardEvent & evt_info) {
+  bool OnKeydown(const emp::web::KeyboardEvent & evt_info) {
     // Reject most modified keypresses.
     if (evt_info.altKey || evt_info.ctrlKey || evt_info.metaKey) return false;
 
@@ -243,7 +243,7 @@ EvokeInterface * evoke_interface;
 
 extern "C" int main()
 {  
-  UI::Initialize();
+  emp::Initialize();
   evoke_interface = new EvokeInterface();
 
   return 0;
