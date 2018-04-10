@@ -183,7 +183,7 @@ public:
 
     const int key_code = evt_info.keyCode;
     bool return_value = true;
-    auto * user_body = world.physics.GetBodySet()[0];
+    auto user_body = world.physics.GetBodySet()[0];
     
     switch (key_code) {
     case ' ':                                     // [SPACE] => Start / Stop a run
