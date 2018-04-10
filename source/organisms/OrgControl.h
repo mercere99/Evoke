@@ -13,6 +13,6 @@ namespace evoke {
     ~OrgControl() { ; }
   };
 
-};
+}
 
 #endif

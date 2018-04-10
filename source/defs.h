@@ -40,6 +40,6 @@ namespace evoke {
                       std::vector<int>, std::vector<double>,
                       std::vector<bool>, std::vector<std::string> >  Phenotype;
 
-};
+}
 
 #endif

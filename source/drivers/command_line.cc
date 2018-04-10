@@ -16,7 +16,7 @@ private:
   evoke::World world;  // Everything unrelated to the interface should be in the world.
 
 public:
-  EvokeInterface() { world.Init(); }
+  EvokeInterface() : world() { world.Init(); }
   ~EvokeInterface() { ; }
 
   void Step() { world.Update(); }
