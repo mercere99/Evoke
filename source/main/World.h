@@ -1,5 +1,5 @@
 //  This file is part of Evoke, https://github.com/mercere99/Evoke/
-//  Copyright (C) Michigan State University, 2016.
+//  Copyright (C) Michigan State University, 2016-2018
 //  Released under the MIT Software license; see doc/LICENSE
 //
 //
@@ -27,7 +27,7 @@ namespace evoke {
     double repro_prob;                // Chance of legal org to replicate each update.
     double drift;                     // Amount of Brownian motion.
     double org_radius;                // How big should each cell get?
-    int max_link_count;               // How many links can an org have?
+    size_t max_link_count;            // How many links can an org have?
     
     emp::Config config;
     emp::Physics2D<evoke::dBody> physics;
