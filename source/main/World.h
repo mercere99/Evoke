@@ -14,7 +14,7 @@
 #ifndef EVOKE_WORLD_H
 #define EVOKE_WORLD_H
 
-
+#include "base/Ptr.h"
 #include "config/config.h"
 #include "tools/Random.h"
 
@@ -33,12 +33,13 @@ namespace evoke {
     emp::Physics2D<evoke::dBody> physics;
     emp::Random random;    
 
-    World() : repro_prob(0.003), drift(0.15), org_radius(4.0), max_link_count(3), physics(width, height) { ; }
+    World() : repro_prob(0.003), drift(0.15), org_radius(4.0), max_link_count(3)
+	    , config(), physics(width, height), random() { ; }
 
     void Init() {
       // Initialize an organism in the middle of the world.
       const emp::Point mid_point( width / 2.0, height / 2.0 );
-      auto org = new evoke::dBody(evoke::dCircle(mid_point, org_radius));
+      auto org = emp::NewPtr<evoke::dBody>(evoke::dCircle(mid_point, org_radius));
       physics.AddBody(org);
     }
 
@@ -56,10 +57,10 @@ namespace evoke {
 
       // Test which organisms should replicate.
       auto & body_set = physics.GetBodySet();
-      emp::vector<evoke::dBody *> new_bodies;
+      emp::vector<emp::Ptr<evoke::dBody>> new_bodies;
       
       // Loop through all bodies to see which ones should replicate.
-      for (auto * body : body_set) {
+      for (auto body : body_set) {
         // Add a small amount of Brownian motion...
         body->IncSpeed( emp::Angle(random.GetDouble() * (2.0 * emp::PI)).GetPoint(drift) );
       
@@ -73,7 +74,10 @@ namespace evoke {
 
         if (random.P(repro_prob) || (body_set.size() < 4 && random.P(repro_prob*3.0))) {
           emp::Angle repro_angle(random.GetDouble(2.0 * emp::PI));
-          auto * new_body = body->BuildOffspring( repro_angle.GetPoint(0.1) );
+          auto new_body = body->BuildOffspring( repro_angle.GetPoint(0.1) );
+
+	  // Inheret detaching on divide.
+	  new_body->SetDetachOnDivide(body->GetDetachOnDivide());
 
           // For the moment, assume 95% chance of faithful copy.
           if (random.P(0.95)) new_body->SetColorID(body->GetColorID());
@@ -91,6 +95,6 @@ namespace evoke {
     }
   };
 
-};
+}
 
 #endif
