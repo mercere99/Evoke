@@ -4,7 +4,6 @@
 #include "../defs.h"
 
 #include "config/config.h"
-#include "kinetic/callbacks.h"
 #include "geometry/Body2D.h"
 #include "geometry/Physics2D.h"
 #include "tools/functions.h"
@@ -25,7 +24,7 @@ public:
 
 int main() {
   std::cout << "Welcome to E\\/OKE!" << std::endl;
-
+  
   // emp::Config config;
   // std::cout << config.RANDOM_SEED() << std::endl;
   // config.RANDOM_SEED(40);
