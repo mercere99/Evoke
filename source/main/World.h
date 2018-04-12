@@ -34,12 +34,13 @@ namespace evoke {
     emp::Random random;    
 
     World() : repro_prob(0.003), drift(0.15), org_radius(4.0), max_link_count(3)
-	    , config(), physics(width, height), random() { ; }
+	    , config(), physics(width, height), random(1) { ; }
 
     void Init() {
       // Initialize an organism in the middle of the world.
       const emp::Point mid_point( width / 2.0, height / 2.0 );
       auto org = emp::NewPtr<evoke::dBody>(evoke::dCircle(mid_point, org_radius));
+      org->SetDetachOnDivide(physics.GetDetach());
       physics.AddBody(org);
     }
 
@@ -76,12 +77,20 @@ namespace evoke {
           emp::Angle repro_angle(random.GetDouble(2.0 * emp::PI));
           auto new_body = body->BuildOffspring( repro_angle.GetPoint(0.1) );
 
-	  // Inheret detaching on divide.
-	  new_body->SetDetachOnDivide(body->GetDetachOnDivide());
+	  // Physics identifies default detach
+	  // new_body->SetDetachOnDivide(body->GetDetachOnDivide());
+	  new_body->SetDetachOnDivide(physics.GetDetach());
+
+	  // @CAO Hack: Sometimes always detach AND change color.
+	  if (random.P(0.1)) {
+	    new_body->SetDetachOnDivide(true);
+	    new_body->SetColorID( random.GetInt(360) );
+	  }
+          else new_body->SetColorID(body->GetColorID());
 
           // For the moment, assume 95% chance of faithful copy.
-          if (random.P(0.95)) new_body->SetColorID(body->GetColorID());
-          else new_body->SetColorID( random.GetInt(360) );
+	  //          if (random.P(0.95)) new_body->SetColorID(body->GetColorID());
+	  //          else new_body->SetColorID( random.GetInt(360) );
           
           new_bodies.push_back(new_body); // Mark this body to be added.
         }
