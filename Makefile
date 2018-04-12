@@ -2,9 +2,11 @@
 CFLAGS_all := -Wall -Wno-unused-function -std=c++14 -I../Empirical/source/ -I./
 
 # Native compiler information
-CXX_nat := g++
-CFLAGS_nat := -g $(CFLAGS_all)
-#CFLAGS_nat := -O3 -DNDEBUG $(CFLAGS_all)
+CXX_native := g++
+#CFLAGS_native := -g $(CFLAGS_all)
+CFLAGS_native_debug := -g  $(CFLAGS_all) -pedantic -DEMP_TRACK_MEM  -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wconversion -Weffc++
+#CFLAGS_native_debug := -g -DEMP_ABORT_PTR_DELETE=3227 $(CFLAGS_all) -pedantic -DEMP_TRACK_MEM  -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wconversion -Weffc++
+CFLAGS_native := -O3 -DNDEBUG $(CFLAGS_all)
 
 # Emscripten compiler information
 CXX_web := emcc
@@ -21,8 +23,12 @@ default: evoke
 web: evoke.js
 all: evoke evoke.js
 
+debug:	source/drivers/command_line.cc
+	$(CXX_native) $(CFLAGS_native_debug) source/drivers/command_line.cc -o evoke
+	@echo Debug version of command_line evoke complete.
+
 evoke:	source/drivers/command_line.cc
-	$(CXX_nat) $(CFLAGS_nat) source/drivers/command_line.cc -o evoke
+	$(CXX_native) $(CFLAGS_native) source/drivers/command_line.cc -o evoke
 	@echo To build the web version use: make web
 
 evoke.js: source/drivers/html.cc
