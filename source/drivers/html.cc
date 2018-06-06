@@ -153,12 +153,12 @@ public:
     auto step_but = doc.Button("step_but");
 
     if (anim.GetActive()) {
-      start_but.Label("Stop");    // If animation is running, button should read "Stop"
-      step_but.Disabled(true);    // Cannot step animation already running.
+      start_but.SetLabel("Stop");    // If animation is running, button should read "Stop"
+      step_but.SetDisabled(true);    // Cannot step animation already running.
     }
     else {
-      start_but.Label("Start");     // If animation is stopped, button should read "Start"
-      step_but.Disabled(false);    // Can step stopped animation.
+      start_but.SetLabel("Start");     // If animation is stopped, button should read "Start"
+      step_but.SetDisabled(false);    // Can step stopped animation.
     }
   }
 
