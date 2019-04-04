@@ -25,13 +25,13 @@ private:
   UI::KeypressManager keypress_manager;
 
   enum class MapMode { BLANK, MAKE_BLANK, BASIC } map_mode;
-  
+
 public:
   EvokeInterface()
     : doc("emp_base")
     , anim([this](){ EvokeInterface::Animate(anim); })
     , map_mode(MapMode::BASIC)
-  {    
+  {
     // Link keypresses to the proper handlers
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
 
@@ -63,7 +63,7 @@ public:
     control_set << mode_sel;
 
     control_set << "<br>";
-    
+
     UI::Selector size_sel("size_sel");
     size_sel.SetOption("Cell Size 3",  [this](){world.org_radius=3.0;} );
     size_sel.SetOption("Cell Size 4",  [this](){world.org_radius=4.0;} );
@@ -118,7 +118,7 @@ public:
       ;
 
 
-    world.Init(); // Sartup the world.    
+    world.Init(); // Sartup the world.
 
     // Draw initial state of the world.
     UI::Draw( doc.Canvas("pop_view"),
@@ -137,7 +137,7 @@ public:
       map_mode = MapMode::BLANK;
     case MapMode::BLANK:
       break;
-    case MapMode::BASIC: 
+    case MapMode::BASIC:
       UI::Draw( doc.Canvas("pop_view"),
                 world.physics.GetSurface(),
                 emp::GetHueMap(360));
@@ -153,12 +153,12 @@ public:
     auto step_but = doc.Button("step_but");
 
     if (anim.GetActive()) {
-      start_but.Label("Stop");    // If animation is running, button should read "Stop"
-      step_but.Disabled(true);    // Cannot step animation already running.
+      start_but.SetLabel("Stop");    // If animation is running, button should read "Stop"
+      step_but.SetDisabled(true);    // Cannot step animation already running.
     }
     else {
-      start_but.Label("Start");     // If animation is stopped, button should read "Start"
-      step_but.Disabled(false);    // Can step stopped animation.
+      start_but.SetLabel("Start");     // If animation is stopped, button should read "Start"
+      step_but.SetDisabled(false);    // Can step stopped animation.
     }
   }
 
@@ -169,7 +169,7 @@ public:
 
   void DoReset() {
     world.Reset();
-    
+
     // Redraw the world.
     UI::Draw( doc.Canvas("pop_view"),
               world.physics.GetSurface(),
@@ -184,7 +184,7 @@ public:
     const int key_code = evt_info.keyCode;
     bool return_value = true;
     auto user_body = world.physics.GetBodySet()[0];
-    
+
     switch (key_code) {
     case ' ':                                     // [SPACE] => Start / Stop a run
       DoStart();
@@ -233,7 +233,7 @@ public:
     default:
       return_value = false;
     };
-    
+
     return return_value;
   }
 
@@ -242,7 +242,7 @@ public:
 EvokeInterface * evoke_interface;
 
 extern "C" int main()
-{  
+{
   emp::Initialize();
   evoke_interface = new EvokeInterface();
 
