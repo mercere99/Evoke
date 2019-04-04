@@ -1,42 +1,57 @@
+# Project-specific settings
+PROJECT := evoke
+EMP_DIR := ../Empirical/source
+
 # Flags to use regardless of compiler
-CFLAGS_all := -Wall -Wno-unused-function -std=c++17 -I../Empirical/source/ -I./
+CFLAGS_all := -Wall -Wno-unused-function -std=c++17 -I$(EMP_DIR)/
 
 # Native compiler information
-CXX_native := g++
-#CFLAGS_native := -g $(CFLAGS_all)
-CFLAGS_native_debug := -g  $(CFLAGS_all) -pedantic -DEMP_TRACK_MEM  -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wconversion -Weffc++
-#CFLAGS_native_debug := -g -DEMP_ABORT_PTR_DELETE=3227 $(CFLAGS_all) -pedantic -DEMP_TRACK_MEM  -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wconversion -Weffc++
-CFLAGS_native := -O3 -DNDEBUG $(CFLAGS_all)
+CXX_nat := g++
+CFLAGS_nat := -O3 -DNDEBUG $(CFLAGS_all)
+CFLAGS_nat_debug := -g $(CFLAGS_all)
 
 # Emscripten compiler information
 CXX_web := emcc
-#OFLAGS_web := -g4 -pedantic -Wno-dollar-in-identifier-extension -s TOTAL_MEMORY=67108864 # -s DEMANGLE_SUPPORT=1 # -s SAFE_HEAP=1
-OFLAGS_web := -DNDEBUG -s TOTAL_MEMORY=67108864
-#OFLAGS_web := -Oz -DNDEBUG -s TOTAL_MEMORY=67108864 -s ASSERTIONS=1
-#OFLAGS_web := -Os -DNDEBUG -s TOTAL_MEMORY=67108864
+OFLAGS_web_all := -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" -s TOTAL_MEMORY=67108864 --js-library $(EMP_DIR)/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1 #--embed-file configs
+OFLAGS_web := -Oz -DNDEBUG
+OFLAGS_web_debug := -g4 -Oz -Wno-dollar-in-identifier-extension
+
+CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) $(OFLAGS_web_all)
+CFLAGS_web_debug := $(CFLAGS_all) $(OFLAGS_web_debug) $(OFLAGS_web_all)
 
 
-# CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s COMPILER_ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
-CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/source/web/library_emp.js  -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
+default: $(PROJECT)
+native: $(PROJECT)
+web: $(PROJECT).js
+all: $(PROJECT) $(PROJECT).js
 
-default: evoke
-web: web/evoke.js
-all: evoke web/evoke.js
+debug:	CFLAGS_nat := $(CFLAGS_nat_debug)
+debug:	$(PROJECT)
 
-debug:	source/drivers/command_line.cc
-	$(CXX_native) $(CFLAGS_native_debug) source/drivers/command_line.cc -o evoke
-	@echo Debug version of command_line evoke complete.
+debug-web:	CFLAGS_web := $(CFLAGS_web_debug)
+debug-web:	$(PROJECT).js
 
-evoke:	source/drivers/command_line.cc
-	$(CXX_native) $(CFLAGS_native) source/drivers/command_line.cc -o evoke
+web-debug:	debug-web
+
+$(PROJECT):	source/drivers/command_line.cc
+	$(CXX_nat) $(CFLAGS_nat) source/drivers/command_line.cc -o $(PROJECT)
 	@echo To build the web version use: make web
 
-web/evoke.js: source/drivers/html.cc
-	$(CXX_web) $(CFLAGS_web) source/drivers/html.cc -o web/evoke.js
+$(PROJECT).js: source/drivers/html.cc
+	$(CXX_web) $(CFLAGS_web) source/drivers/html.cc -o web/$(PROJECT).js
+
+.PHONY: clean test serve
+
+serve:
+	python3 -m http.server
 
 clean:
-	rm -f evoke web/evoke.js *.js.map *~ source/*.o source/*/*.o web/evoke.wasm
+	rm -f $(PROJECT) web/$(PROJECT).js web/*.js.map web/*.js.map *~ source/*.o web/*.wasm web/*.wast
+
+test: debug debug-web
+	./evoke | grep -q 'Hello, world!' && echo 'matched!' || exit 1
+	npm install
+	echo "const puppeteer = require('puppeteer'); var express = require('express'); var app = express(); app.use(express.static('web')); app.listen(3000); express.static.mime.types['wasm'] = 'application/wasm'; function sleep(millis) { return new Promise(resolve => setTimeout(resolve, millis)); } async function run() { const browser = await puppeteer.launch(); const page = await browser.newPage(); await page.goto('http://localhost:3000/evoke.html'); await sleep(1000); const html = await page.content(); console.log(html); browser.close(); process.exit(0); } run();" | node | tr -d '\n' | grep -q "Each circle" && echo "matched!" || exit 1
 
 # Debugging information
-#print-%: ; @echo $*=$($*)
 print-%: ; @echo '$(subst ','\'',$*=$($*))'
