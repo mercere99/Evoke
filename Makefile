@@ -17,11 +17,11 @@ OFLAGS_web := -DNDEBUG -s TOTAL_MEMORY=67108864
 
 
 # CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s COMPILER_ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
-CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/source/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
+CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/source/web/library_emp.js  -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
 
 default: evoke
-web: evoke.js
-all: evoke evoke.js
+web: web/evoke.js
+all: evoke web/evoke.js
 
 debug:	source/drivers/command_line.cc
 	$(CXX_native) $(CFLAGS_native_debug) source/drivers/command_line.cc -o evoke
@@ -31,11 +31,11 @@ evoke:	source/drivers/command_line.cc
 	$(CXX_native) $(CFLAGS_native) source/drivers/command_line.cc -o evoke
 	@echo To build the web version use: make web
 
-evoke.js: source/drivers/html.cc
-	$(CXX_web) $(CFLAGS_web) source/drivers/html.cc -o evoke.js
+web/evoke.js: source/drivers/html.cc
+	$(CXX_web) $(CFLAGS_web) source/drivers/html.cc -o web/evoke.js
 
 clean:
-	rm -f evoke evoke.js *.js.map *~ source/*.o source/*/*.o
+	rm -f evoke web/evoke.js *.js.map *~ source/*.o source/*/*.o web/evoke.wasm
 
 # Debugging information
 #print-%: ; @echo $*=$($*)
