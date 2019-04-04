@@ -1,5 +1,5 @@
 # Flags to use regardless of compiler
-CFLAGS_all := -Wall -Wno-unused-function -std=c++14 -I../Empirical/source/ -I./
+CFLAGS_all := -Wall -Wno-unused-function -std=c++17 -I../Empirical/source/ -I./
 
 # Native compiler information
 CXX_native := g++
