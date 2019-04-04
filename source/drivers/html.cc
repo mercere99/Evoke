@@ -35,15 +35,12 @@ public:
     // Link keypresses to the proper handlers
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
 
-    // Add a welcome.
-    doc << "<h1>Welcome to Evoke!</h1>";
-
     // Add a canvas to draw the world.
-    doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 60) << "<br>";
+    doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 250) << "<br>";
 
     // Add buttons.
     auto control_set = doc.AddDiv("buttons");
-    control_set.SetPosition(10, 70+world.height);
+    control_set.SetPosition(10, 260+world.height);
     control_set << UI::Button([this](){DoStart();}, "Start", "start_but");
     control_set << UI::Button([this](){DoStep();}, "Step", "step_but");
     control_set << UI::Button([this](){DoReset();}, "Reset", "reset_but");
@@ -90,7 +87,7 @@ public:
 
     // And stats (next o canvas)
     auto stats_set = doc.AddDiv("stats");
-    stats_set.SetPosition(world.width+40, 60);
+    stats_set.SetPosition(world.width+40, 250);
     auto & body_set = world.physics.GetBodySet();
 
     stats_set << "Update: " << UI::Live( [this]() { return anim.GetFrameCount(); } ) << "<br>";
