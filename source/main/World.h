@@ -14,9 +14,9 @@
 #ifndef EVOKE_WORLD_H
 #define EVOKE_WORLD_H
 
-#include "base/Ptr.h"
-#include "config/config.h"
-#include "tools/Random.h"
+#include "emp/base/Ptr.hpp"
+#include "emp/config/config.hpp"
+#include "emp/math/Random.hpp"
 
 namespace evoke {
   

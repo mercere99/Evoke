@@ -14,10 +14,10 @@
 #define EMP_CONFIG_FILE "source/evoke_config.h"
 #endif
 
-#include "config/config.h"
-#include "geometry/Body2D.h"
-#include "hardware/AvidaGP.h"
-#include "in_progress/Trait.h"
+#include "emp/config/config.hpp"
+#include "emp/geometry/Body2D.hpp"
+#include "emp/hardware/AvidaGP.hpp"
+#include "emp/in_progress/Trait.hpp"
 
 namespace evoke {
 

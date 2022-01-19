@@ -3,10 +3,10 @@
 
 #include "../defs.h"
 
-#include "config/config.h"
-#include "geometry/Body2D.h"
-#include "geometry/Physics2D.h"
-#include "tools/functions.h"
+#include "emp/config/config.hpp"
+#include "emp/geometry/Body2D.hpp"
+#include "emp/geometry/Physics2D.hpp"
+// #include "emp/tools/functions.hpp"
 
 #include "../main/World.h"
 #include "../organisms/OrgControl.h"
