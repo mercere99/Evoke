@@ -2,14 +2,14 @@
 
 #include "../defs.h"
 
-#include "web/JSWrap.h"
-#include "geometry/Body2D.h"
-#include "geometry/Physics2D.h"
+#include "emp/web/JSWrap.hpp"
+#include "emp/geometry/Body2D.hpp"
+#include "emp/geometry/Physics2D.hpp"
 
-#include "web/Animate.h"
-#include "web/canvas_utils.h"
-#include "web/KeypressManager.h"
-#include "web/web.h"
+#include "emp/web/Animate.hpp"
+#include "emp/web/canvas_utils.hpp"
+#include "emp/web/KeypressManager.hpp"
+#include "emp/web/web.hpp"
 
 #include "../main/World.h"
 #include "../organisms/OrgControl.h"
