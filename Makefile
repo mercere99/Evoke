@@ -16,8 +16,8 @@ OFLAGS_web := -DNDEBUG -s TOTAL_MEMORY=67108864
 #OFLAGS_web := -Os -DNDEBUG -s TOTAL_MEMORY=67108864
 
 
-# CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s COMPILER_ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
-CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/source/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
+# CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/include/emp/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s COMPILER_ASSERTIONS=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
+CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/include/emp/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
 
 default: evoke
 web: evoke.js
