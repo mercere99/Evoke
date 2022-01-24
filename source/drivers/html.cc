@@ -25,25 +25,22 @@ private:
   UI::KeypressManager keypress_manager;
 
   enum class MapMode { BLANK, MAKE_BLANK, BASIC } map_mode;
-  
+
 public:
   EvokeInterface()
     : doc("emp_base")
     , anim([this](){ EvokeInterface::Animate(anim); })
     , map_mode(MapMode::BASIC)
-  {    
+  {
     // Link keypresses to the proper handlers
     keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
 
-    // Add a welcome.
-    doc << "<h1>Welcome to Evoke!</h1>";
-
     // Add a canvas to draw the world.
-    doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 60) << "<br>";
+    doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 250) << "<br>";
 
     // Add buttons.
     auto control_set = doc.AddDiv("buttons");
-    control_set.SetPosition(10, 70+world.height);
+    control_set.SetPosition(10, 260+world.height);
     control_set << UI::Button([this](){DoStart();}, "Start", "start_but");
     control_set << UI::Button([this](){DoStep();}, "Step", "step_but");
     control_set << UI::Button([this](){DoReset();}, "Reset", "reset_but");
@@ -63,7 +60,7 @@ public:
     control_set << mode_sel;
 
     control_set << "<br>";
-    
+
     UI::Selector size_sel("size_sel");
     size_sel.SetOption("Cell Size 3",  [this](){world.org_radius=3.0;} );
     size_sel.SetOption("Cell Size 4",  [this](){world.org_radius=4.0;} );
@@ -90,7 +87,7 @@ public:
 
     // And stats (next o canvas)
     auto stats_set = doc.AddDiv("stats");
-    stats_set.SetPosition(world.width+40, 60);
+    stats_set.SetPosition(world.width+40, 250);
     auto & body_set = world.physics.GetBodySet();
 
     stats_set << "Update: " << UI::Live( [this]() { return anim.GetFrameCount(); } ) << "<br>";
@@ -118,7 +115,7 @@ public:
       ;
 
 
-    world.Init(); // Sartup the world.    
+    world.Init(); // Sartup the world.
 
     // Draw initial state of the world.
     UI::Draw( doc.Canvas("pop_view"),
@@ -137,7 +134,7 @@ public:
       map_mode = MapMode::BLANK;
     case MapMode::BLANK:
       break;
-    case MapMode::BASIC: 
+    case MapMode::BASIC:
       UI::Draw( doc.Canvas("pop_view"),
                 world.physics.GetSurface(),
                 emp::GetHueMap(360));
@@ -169,7 +166,7 @@ public:
 
   void DoReset() {
     world.Reset();
-    
+
     // Redraw the world.
     UI::Draw( doc.Canvas("pop_view"),
               world.physics.GetSurface(),
@@ -184,7 +181,7 @@ public:
     const int key_code = evt_info.keyCode;
     bool return_value = true;
     auto user_body = world.physics.GetBodySet()[0];
-    
+
     switch (key_code) {
     case ' ':                                     // [SPACE] => Start / Stop a run
       DoStart();
@@ -233,7 +230,7 @@ public:
     default:
       return_value = false;
     };
-    
+
     return return_value;
   }
 
@@ -242,7 +239,7 @@ public:
 EvokeInterface * evoke_interface;
 
 extern "C" int main()
-{  
+{
   emp::Initialize();
   evoke_interface = new EvokeInterface();
 
