@@ -36,12 +36,12 @@ debug-web:	$(PROJECT).js
 
 web-debug:	debug-web
 
-$(PROJECT):	source/drivers/command_line.cc
-	$(CXX_nat) $(CFLAGS_nat) source/drivers/command_line.cc -o $(PROJECT)
+$(PROJECT):	source/native/$(PROJECT).cpp
+	$(CXX_nat) $(CFLAGS_nat) source/native/$(PROJECT).cpp -o $(PROJECT)
 	@echo To build the web version use: make web
 
-$(PROJECT).js: source/drivers/html.cc
-	$(CXX_web) $(CFLAGS_web) source/drivers/html.cc -o web/$(PROJECT).js
+$(PROJECT).js: source/web/$(PROJECT)-web.cpp
+	$(CXX_web) $(CFLAGS_web) source/web/$(PROJECT)-web.cpp -o web/$(PROJECT).js
 
 .PHONY: clean test serve
 

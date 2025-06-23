@@ -125,7 +125,7 @@ public:
 
   ~EvokeInterface() { ; }
 
-  void Animate(const UI::Animate & anim) {
+  void Animate([[maybe_unused]] const UI::Animate & anim) {
     world.Update();
 
     switch (map_mode) {
