@@ -3,22 +3,24 @@ PROJECT := evoke
 EMP_DIR := ../Empirical/include/
 
 # Flags to use regardless of compiler
-CFLAGS_all := -Wall -Wno-unused-function -std=c++17 -I$(EMP_DIR)/
+CFLAGS_all := -Wall -Wextra -Wno-unused-function -std=c++20 -I$(EMP_DIR)/
 
 # Native compiler information
-CXX_nat := g++
+CXX_nat := c++
 CFLAGS_nat := -O3 -DNDEBUG $(CFLAGS_all)
 CFLAGS_nat_debug := -g $(CFLAGS_all)
 
 # Emscripten compiler information
 CXX_web := emcc
-OFLAGS_web_all := -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" -s TOTAL_MEMORY=67108864 --js-library $(EMP_DIR)/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1 #--embed-file configs
+EMP_METHODS = EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap', 'UTF8ToString', 'stringToUTF8', 'lengthBytesUTF8']"
+EMP_FUNCTIONS = EXPORTED_FUNCTIONS="['_main', "_malloc", "_free", '_empCppCallback']"
+JS_LIB = --js-library $(EMP_DIR)/emp/web/library_emp.js
+OFLAGS_web_all := -s $(EMP_METHODS) -s TOTAL_MEMORY=67108864 $(JS_LIB) -s $(EMP_FUNCTIONS) -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1
 OFLAGS_web := -Oz -DNDEBUG
-OFLAGS_web_debug := -g4 -Oz -Wno-dollar-in-identifier-extension
+OFLAGS_web_debug := -g4 -pedantic -Wno-dollar-in-identifier-extension
 
 CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) $(OFLAGS_web_all)
 CFLAGS_web_debug := $(CFLAGS_all) $(OFLAGS_web_debug) $(OFLAGS_web_all)
-
 
 default: $(PROJECT)
 native: $(PROJECT)
@@ -26,7 +28,6 @@ web: $(PROJECT).js
 all: $(PROJECT) $(PROJECT).js
 
 
-# CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) --js-library ../Empirical/include/emp/web/library_emp.js -s EXPORTED_FUNCTIONS="['_main', '_empCppCallback']" -s "EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1 --embed-file configs
 debug:	CFLAGS_nat := $(CFLAGS_nat_debug)
 debug:	$(PROJECT)
 
@@ -48,7 +49,7 @@ serve:
 	python3 -m http.server
 
 clean:
-	rm -f $(PROJECT) web/$(PROJECT).js web/*.js.map web/*.js.map *~ source/*.o web/*.wasm web/*.wast
+	rm -f $(PROJECT) web/$(PROJECT).js web/*.js.mem web/*.js.map web/*.wasm web/*.wasm.map *~ source/*.o
 
 test: debug debug-web
 	./evoke | grep -q 'Hello, world!' && echo 'matched!' || exit 1
