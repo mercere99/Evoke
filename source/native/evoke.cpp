@@ -8,8 +8,8 @@
 #include "emp/geometry/Physics2D.hpp"
 // #include "emp/tools/functions.hpp"
 
-#include "../main/World.h"
-#include "../organisms/OrgControl.h"
+#include "../main/World.hpp"
+#include "../organisms/OrgControl.hpp"
 
 class EvokeInterface {
 private:

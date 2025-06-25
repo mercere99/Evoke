@@ -11,8 +11,8 @@
 #include "emp/web/KeypressManager.hpp"
 #include "emp/web/web.hpp"
 
-#include "../main/World.h"
-#include "../organisms/OrgControl.h"
+#include "../main/World.hpp"
+#include "../organisms/OrgControl.hpp"
 
 namespace UI = emp::web;
 
@@ -26,6 +26,7 @@ private:
 
   enum class MapMode { BLANK, MAKE_BLANK, BASIC } map_mode;
 
+  using key_event_t = emp::web::KeyboardEvent;
 public:
   EvokeInterface()
     : doc("emp_base")
@@ -33,7 +34,7 @@ public:
     , map_mode(MapMode::BASIC)
   {
     // Link keypresses to the proper handlers
-    keypress_manager.AddKeydownCallback(std::bind(&EvokeInterface::OnKeydown, this, _1));
+    keypress_manager.AddKeydownCallback([this](const key_event_t & evt){ return OnKeydown(evt); });
 
     // Add a canvas to draw the world.
     doc << UI::Canvas(world.width, world.height, "pop_view").SetPosition(10, 250) << "<br>";
@@ -41,12 +42,12 @@ public:
     // Add buttons.
     auto control_set = doc.AddDiv("buttons");
     control_set.SetPosition(10, 260+world.height);
-    control_set << UI::Button([this](){DoStart();}, "Start", "start_but");
-    control_set << UI::Button([this](){DoStep();}, "Step", "step_but");
-    control_set << UI::Button([this](){DoReset();}, "Reset", "reset_but");
+    control_set << UI::Button([this](){ DoStart(); }, "Start", "start_but");
+    control_set << UI::Button([this](){ DoStep();  }, "Step", "step_but");
+    control_set << UI::Button([this](){ DoReset(); }, "Reset", "reset_but");
 
     UI::Selector map_sel("map_sel");
-    map_sel.SetOption("Basic Map",            [this](){map_mode = MapMode::BASIC;} );
+    map_sel.SetOption("Basic Map",         [this](){map_mode = MapMode::BASIC;} );
     map_sel.SetOption("Blank Map (fast!)", [this](){map_mode = MapMode::MAKE_BLANK;} );
     control_set << map_sel;
 
@@ -62,12 +63,13 @@ public:
     control_set << "<br>";
 
     UI::Selector size_sel("size_sel");
+    size_sel.SetOption("Cell Size 2",  [this](){world.org_radius=2.0;} );
     size_sel.SetOption("Cell Size 3",  [this](){world.org_radius=3.0;} );
     size_sel.SetOption("Cell Size 4",  [this](){world.org_radius=4.0;} );
-    size_sel.SetOption("Cell Size 5",  [this](){world.org_radius=5.0;} );
     size_sel.SetOption("Cell Size 6",  [this](){world.org_radius=6.0;} );
     size_sel.SetOption("Cell Size 8",  [this](){world.org_radius=8.0;} );
     size_sel.SetOption("Cell Size 10", [this](){world.org_radius=10.0;} );
+    size_sel.SetOption("Cell Size 15", [this](){world.org_radius=15.0;} );
     size_sel.SelectID(1);
     control_set << size_sel;
 
@@ -75,14 +77,15 @@ public:
     drift_sel.SetOption("Flow Off",  [this](){world.drift=0.0;} );
     drift_sel.SetOption("Flow Low",  [this](){world.drift=0.05;} );
     drift_sel.SetOption("Flow High", [this](){world.drift=0.15;} );
-    drift_sel.SelectID(2);
+    drift_sel.SelectID(0);
     control_set << drift_sel;
 
     UI::Selector repro_sel("repro_sel");
     repro_sel.SetOption("Copy Off",  [this](){world.repro_prob=0.0;} );
     repro_sel.SetOption("Copy Slow", [this](){world.repro_prob=0.003;} );
-    repro_sel.SetOption("Copy Fast", [this](){world.repro_prob=0.01;} );
-    repro_sel.SelectID(1);
+    repro_sel.SetOption("Copy Normal", [this](){world.repro_prob=0.01;} );
+    repro_sel.SetOption("Copy Fast", [this](){world.repro_prob=0.03;} );
+    repro_sel.SelectID(2);
     control_set << repro_sel;
 
     // And stats (next o canvas)
@@ -94,28 +97,28 @@ public:
     stats_set << "Org Count: " << UI::Live( [&body_set](){ return body_set.size(); } );
 
     stats_set << "<br><br>"
-              << "Each circle represents a <b>single cell</b>.<br>"
-              << "Cells are <b>attached</b> during gestation; in some setups, they may stay attached after birth.<br>"
-              << "<b>Colors</b> are (mostly) meaningless, but have a 5% chance of changing at birth.<br>"
-              << "<br>"
-              << "Press <b>Start/Stop</b> to begin or pause a run; <b>Step</b> advances a run by a single update.<br>"
-              << "Use <b>Reset</b> to restart a run from the beginning (using current settings).<br>"
-              << "Freeze the <b>Map</b> to speed up processing by more than 10-fold.<br>"
-              << "Cells can be <b>Individuals</b> or linked into clusters like <b>Snowflake</b> Yeast.<br>"
-              << "<b>Cell Sizes</b> can be changed, but you need to <b>Reset</b> the run to see the results.<br>"
-              << "<b>Flow</b> indicates the ammount of Brownian motion in the run.<br>"
-              << "<b>Copy</b> rate determines how quickly cells should be reproducing.<br>"
-              << "<br>"
-              << "<b>Keyboard Shortcuts</b>:<br>"
-              << "&nbsp;&nbsp;<b>[SPACE]</b>: Start/Stop.<br>"
-              << "&nbsp;&nbsp;<b>[ARROWS]</b>: Move a cell around.<br>"
-              << "&nbsp;&nbsp;<b>[M]</b>: Toggle Map Mode (Basic vs. Blank).<br>"
-              << "&nbsp;&nbsp;<b>[R]</b>: Reset Run.<br>"
-              << "&nbsp;&nbsp;<b>[S]</b>: Step a single update.<br>"
+      "Each circle represents a <b>single cell</b>.<br>"
+      "Cells are <b>attached</b> during gestation; in some setups, they may stay attached after birth.<br>"
+      "<b>Colors</b> are (mostly) meaningless, but have a 5% chance of changing at birth.<br>"
+      "<br>"
+      "Press <b>Start/Stop</b> to begin or pause a run; <b>Step</b> advances a run by a single update.<br>"
+      "Use <b>Reset</b> to restart a run from the beginning (using current settings).<br>"
+      "Freeze the <b>Map</b> to speed up processing by more than 10-fold.<br>"
+      "Cells can be <b>Individuals</b> or linked into clusters like <b>Snowflake</b> Yeast.<br>"
+      "<b>Cell Sizes</b> can be changed, but you need to <b>Reset</b> the run to see the results.<br>"
+      "<b>Flow</b> indicates the ammount of Brownian motion in the run.<br>"
+      "<b>Copy</b> rate determines how quickly cells should be reproducing.<br>"
+      "<br>"
+      "<b>Keyboard Shortcuts</b>:<br>"
+      "&nbsp;&nbsp;<b>[SPACE]</b>: Start/Stop.<br>"
+      "&nbsp;&nbsp;<b>[ARROWS]</b>: Move a cell around (forward and turns).<br>"
+      "&nbsp;&nbsp;<b>[M]</b>: Toggle Map Mode (Basic vs. Blank).<br>"
+      "&nbsp;&nbsp;<b>[R]</b>: Reset Run.<br>"
+      "&nbsp;&nbsp;<b>[S]</b>: Step a single update.<br>"
       ;
 
 
-    world.Init(); // Sartup the world.
+    world.Init(); // Startup the world.
 
     // Draw initial state of the world.
     UI::Draw( doc.Canvas("pop_view"),
@@ -123,7 +126,7 @@ public:
               emp::GetHueMap(360));
   }
 
-  ~EvokeInterface() { ; }
+  ~EvokeInterface() {}
 
   void Animate([[maybe_unused]] const UI::Animate & anim) {
     world.Update();
