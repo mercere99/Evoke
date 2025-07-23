@@ -1,14 +1,12 @@
 -=-= Next Steps =-=-
-RESYNC with current version of Empirical!
-
 Use new Signals and Actions system to hook into bodies and specify run behavior
-Setup timing to use Emscripten run instead of animation.
-Setup proper body info types (BRAINS: Just color, CPUs, Markov Brains, etc.)
+Set up timing to use Emscripten run instead of animation.
+Set up proper body info types (BRAINS: Just color, CPUs, Markov Brains, etc.)
 Build a simple organism (initially non-evolving) to control bodies
 Hook virtual hardware into organisms
 Hook phenotypes into organisms
 Hook proper config into system
-Setup "optional" plug-in-like module.
+Set up "optional" plug-in-like module.
   - Each module should include:
     * a code-header with new code
     * a config-header with setting macros
@@ -47,4 +45,4 @@ Type of organisms:
 * Print frame rate on the screen so slowdowns can be more easily quantified.
 
 -=-= For CSE 450 =-=-
-* Bodies should be able to fire missles
+* Bodies should be able to fire missiles
