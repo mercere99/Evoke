@@ -3,7 +3,7 @@ PROJECT := evoke
 EMP_DIR := ../Empirical/include/
 
 # Flags to use regardless of compiler
-CFLAGS_all := -Wall -Wextra -Wno-unused-function -std=c++20 -I$(EMP_DIR)/
+CFLAGS_all := -Wall -Wextra -Wno-unused-function -std=c++23 -I$(EMP_DIR)/
 
 # Native compiler information
 CXX_nat := c++
@@ -17,7 +17,7 @@ EMP_FUNCTIONS = EXPORTED_FUNCTIONS="['_main', "_malloc", "_free", '_empCppCallba
 JS_LIB = --js-library $(EMP_DIR)/emp/web/library_emp.js
 OFLAGS_web_all := -s $(EMP_METHODS) -s TOTAL_MEMORY=67108864 $(JS_LIB) -s $(EMP_FUNCTIONS) -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=1
 OFLAGS_web := -Oz -DNDEBUG
-OFLAGS_web_debug := -g4 -pedantic -Wno-dollar-in-identifier-extension
+OFLAGS_web_debug := -gsource-map -pedantic -Wno-dollar-in-identifier-extension
 
 CFLAGS_web := $(CFLAGS_all) $(OFLAGS_web) $(OFLAGS_web_all)
 CFLAGS_web_debug := $(CFLAGS_all) $(OFLAGS_web_debug) $(OFLAGS_web_all)
