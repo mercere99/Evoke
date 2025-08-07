@@ -4,9 +4,7 @@
 #include "../defs.h"
 
 #include "emp/config/config.hpp"
-#include "emp/geometry/Body2D.hpp"
 #include "emp/geometry/Physics2D.hpp"
-// #include "emp/tools/functions.hpp"
 
 #include "../main/World.hpp"
 #include "../organisms/OrgControl.hpp"
@@ -16,13 +14,20 @@ private:
   evoke::World world;  // Everything unrelated to the interface should be in the world.
 
 public:
-  EvokeInterface() : world() { world.Init(); }
-  ~EvokeInterface() { ; }
+  EvokeInterface() : world() {
+    world.org_radius=3.0;
+    world.drift = 0.0;
+    world.repro_prob=0.01;
+    world.Init();
+  }
+  ~EvokeInterface() {}
 
+  size_t GetNumOrgs() const { return world.physics.NumBodies(); }
   void Step() { world.Update(); }
 };
 
 int main() {
+  DEBUG_STACK();
   std::cout << "Welcome to E\\/OKE!" << std::endl;
   
   // emp::Config config;
@@ -33,7 +38,9 @@ int main() {
 
   EvokeInterface evoke;
   for (int i = 0; i < 10000; i++) {
-    std::cout << "Update: " << i << std::endl;
+    std::cout << "Update: " << i
+      << "  NumOrgs: " << evoke.GetNumOrgs()
+      << std::endl;
     evoke.Step();
   }
 

@@ -15,7 +15,6 @@
 #endif
 
 #include "emp/config/config.hpp"
-#include "emp/geometry/Body2D.hpp"
 #include "emp/hardware/AvidaGP.hpp"
 #include "emp/in_progress/Trait.hpp"
 
@@ -27,9 +26,6 @@ namespace evoke {
 
   // Simple typedefs...
   using dControl = OrgControl<emp::AvidaGP>;
-  using dBody = emp::CircleBody2D;
-  using dPoint = emp::Point;
-  using dCircle = emp::Circle;
   
   // Construction of the specific Phenotype types.
   typedef emp::TraitManager<int, double, bool, std::string,
